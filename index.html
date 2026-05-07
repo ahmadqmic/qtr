@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qatar Traffic Report 2024 — QMIC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --red:        #D42321;
+      --red-hover:  #b81e1c;
+      --red-soft:   rgba(212,35,33,.09);
+      --red-border: rgba(212,35,33,.22);
+
+      /* Light section */
+      --l-bg:      #ffffff;
+      --l-alt:     #f7f8fc;
+      --l-card:    #ffffff;
+      --l-border:  #e8eaf0;
+      --l-text:    #0f1221;
+      --l-sub:     #4a5068;
+      --l-muted:   #8b90a7;
+
+      /* Dark section */
+      --d-bg:      #151722;
+      --d-alt:     #1c1f2e;
+      --d-card:    #1e2131;
+      --d-border:  rgba(255,255,255,.08);
+      --d-text:    #f0f1f7;
+      --d-sub:     rgba(240,241,247,.6);
+      --d-muted:   rgba(240,241,247,.36);
+
+      --h: 'Plus Jakarta Sans', sans-serif;
+      --b: 'DM Sans', sans-serif;
+
+      --r-sm:  8px;
+      --r-md: 14px;
+      --r-lg: 20px;
+      --r-xl: 28px;
+
+      --shadow-sm: 0 1px 3px rgba(15,18,33,.06), 0 1px 2px rgba(15,18,33,.04);
+      --shadow-md: 0 4px 16px rgba(15,18,33,.08), 0 1px 4px rgba(15,18,33,.04);
+      --shadow-lg: 0 12px 40px rgba(15,18,33,.1), 0 4px 12px rgba(15,18,33,.06);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { margin: 0; padding: 0; width: 100%; max-width: 100%; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body {
+      font-family: var(--b);
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--l-text);
+      background: var(--l-bg);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── FULLSCREEN CHART MODAL ── */
+    .fs-btn {
+      display: flex; align-items: center; gap: 5px;
+      font-family: var(--b); font-size: 11.5px; font-weight: 500;
+      color: var(--d-muted); background: rgba(255,255,255,.06);
+      border: 1px solid var(--d-border); border-radius: 6px;
+      padding: 5px 11px; cursor: pointer;
+      transition: background .2s, color .2s, border-color .2s;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .fs-btn:hover { background: rgba(212,35,33,.12); border-color: rgba(212,35,33,.3); color: #ff9998; }
+    .fs-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    /* Modal overlay */
+    .fs-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      z-index: 1000;
+      background: rgba(10,10,14,.88);
+      backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .fs-overlay.open { display: flex; }
+    .fs-modal {
+      background: var(--d-card);
+      border: 1px solid var(--d-border);
+      border-radius: var(--r-lg);
+      width: 100%; max-width: 1200px;
+      max-height: 90vh;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,.5);
+    }
+    .fs-modal-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--d-border);
+      flex-shrink: 0;
+    }
+    .fs-modal-head h3 {
+      font-family: var(--h); font-weight: 700; font-size: 17px;
+      color: var(--d-text); letter-spacing: -.01em;
+    }
+    .fs-close {
+      width: 34px; height: 34px;
+      border: 1px solid var(--d-border); border-radius: 50%;
+      background: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--d-muted); transition: border-color .2s, color .2s;
+    }
+    .fs-close:hover { border-color: var(--red); color: var(--red); }
+    .fs-close svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+    .fs-modal-body { flex: 1; padding: 0; overflow: hidden; min-height: 400px; display: flex; flex-direction: column; }
+
+    /* ── YEAR TRANSITION OVERLAY ── */
+    #yearOverlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #fff;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 24px;
+      opacity: 0; pointer-events: none;
+      transition: opacity .22s ease;
+    }
+    #yearOverlay.show { opacity: 1; pointer-events: all; }
+    #yearOverlay.hide { opacity: 0; pointer-events: none; }
+    .yo-logo { height: 30px; width: auto; opacity: .55; }
+    .yo-gauge-wrap {
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .yo-gauge { width: 120px; height: 120px; }
+    .yo-arc {
+      animation: gaugeArc .58s cubic-bezier(.4,0,.2,1) forwards;
+    }
+    @keyframes gaugeArc {
+      from { stroke-dashoffset: 301.6; }
+      to   { stroke-dashoffset: 0; }
+    }
+
+    .yo-year-label {
+      position: absolute;
+      font-family: var(--h); font-weight: 800; font-size: 22px;
+      color: var(--l-text); letter-spacing: -.02em;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+
+    .year-switcher {
+      display: flex; align-items: center;
+      background: var(--l-alt);
+      border: 1px solid var(--l-border);
+      border-radius: 50px; padding: 3px; gap: 2px;
+      flex-shrink: 0;
+    }
+    .year-btn {
+      font-family: var(--h); font-size: 12.5px; font-weight: 600;
+      padding: 5px 14px; border-radius: 50px;
+      border: none; cursor: pointer; background: transparent;
+      color: var(--l-muted); transition: background .2s, color .2s;
+      white-space: nowrap;
+    }
+    .year-btn.active { background: var(--red); color: #fff; box-shadow: 0 2px 8px rgba(212,35,33,.28); }
+    .year-btn:not(.active):hover { color: var(--l-text); background: var(--l-border); }
+
+    nav {
+      position: fixed; inset: 0 0 auto;
+      z-index: 200;
+      height: 70px;
+      background: rgba(255,255,255,.92);
+      border-bottom: 1px solid var(--l-border);
+      backdrop-filter: blur(16px);
+    }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      height: 100%;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+    .nav-links {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex; gap: 32px; list-style: none;
+      align-items: center;
+    }
+    .nav-links-right { display: flex; align-items: center; margin-left: auto; }
+    .nav-brand {
+      display: flex; align-items: center; gap: 0;
+      text-decoration: none;
+    }
+    .nav-logo-svg {
+      height: 36px;
+      width: auto;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-family: var(--b);
+      font-size: 14px; font-weight: 400;
+      color: var(--l-sub); text-decoration: none;
+      transition: color .18s;
+    }
+    .nav-links a:hover { color: var(--l-text); }
+    /* Hamburger */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px;
+      background: none; border: none; outline: none;
+    }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--l-text); border-radius: 2px;
+      transition: transform .25s, opacity .25s;
+    }
+    /* Mobile nav drawer */
+    .nav-drawer {
+      display: none;
+      position: fixed;
+      top: 70px; left: 0; right: 0;
+      background: rgba(255,255,255,0.98);
+      border-bottom: 1px solid var(--l-border);
+      backdrop-filter: blur(16px);
+      z-index: 499;
+      padding: 20px 24px 28px;
+      flex-direction: column; gap: 4px;
+    }
+    .nav-drawer.open { display: flex; }
+    .nav-drawer a {
+      font-family: var(--b);
+      font-size: 16px; font-weight: 400;
+      color: var(--l-sub); text-decoration: none;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--l-border);
+      transition: color .18s;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-drawer a::after {
+      content: '→';
+      font-size: 13px;
+      color: var(--l-muted);
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .nav-drawer a:hover::after { opacity: 1; }
+    .nav-drawer a:last-child { border-bottom: none; }
+    .nav-drawer a:hover { color: var(--red); }
+    .nav-cta {
+      font-family: var(--h);
+      font-size: 13.5px; font-weight: 600;
+      color: #fff; background: var(--red);
+      padding: 9px 22px; border-radius: 50px;
+      text-decoration: none;
+      transition: background .18s, box-shadow .18s;
+      box-shadow: 0 4px 14px rgba(212,35,33,.3);
+    }
+    .nav-cta:hover { background: var(--red-hover); box-shadow: 0 4px 20px rgba(212,35,33,.4); }
+
+    /* ── HERO — light ── */
+    .hero {
+      margin-top: 70px;
+      background: var(--l-bg);
+      padding: 96px 0 0;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+    }
+    /* Hero background image */
+    .hero-bg-img {
+      position: absolute;
+      inset: 0;
+      background: url('images/hero-bg.png') center center / cover no-repeat;
+      pointer-events: none;
+      z-index: 0;
+    }
+    /* White overlay to keep text readable */
+    .hero-bg-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.1);
+    }
+    /* Hero bottom wave into next section */
+    .hero-wave {
+      width: 100%; height: 100px;
+      display: block;
+      margin-bottom: -1px;
+      position: relative; z-index: 2;
+    }
+    .hero-inner {
+      position: relative; z-index: 2;
+      max-width: 1100px; margin: 0 auto;
+      text-align: center;
+      padding: 0 40px;
+    }
+    .hero-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--red-soft);
+      border: 1px solid var(--red-border);
+      color: var(--red);
+      font-family: var(--b);
+      font-size: 13px; font-weight: 500;
+      padding: 6px 16px; border-radius: 50px;
+      margin-bottom: 28px;
+    }
+    .hero-pill-dot {
+      width: 6px; height: 6px;
+      background: var(--red); border-radius: 50%;
+    }
+    .hero-h1 {
+      font-family: var(--h);
+      font-weight: 800;
+      font-size: clamp(44px, 6vw, 80px);
+      line-height: 1.1;
+      letter-spacing: -.03em;
+      color: var(--l-text);
+      margin-bottom: 22px;
+    }
+    .hero-h1 span { color: var(--red); }
+    .hero-desc {
+      font-family: var(--b);
+      font-size: 18px; font-weight: 300;
+      color: var(--l-sub);
+      max-width: 560px; margin: 0 auto 44px;
+      line-height: 1.8;
+    }
+    .hero-stats-row {
+      display: flex; gap: 2px;
+      justify-content: center;
+      max-width: 700px; margin: 0 auto 60px;
+      background: var(--l-border);
+      border: 1px solid var(--l-border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .h-stat {
+      flex: 1;
+      padding: 24px 20px;
+      background: var(--l-bg);
+      text-align: center;
+    }
+    .h-stat-val {
+      font-family: var(--h);
+      font-weight: 800; font-size: 34px;
+      color: var(--l-text); line-height: 1;
+      letter-spacing: -.02em; margin-bottom: 5px;
+      text-align: center;
+    }
+    .h-stat-val sup { font-size: 16px; color: var(--red); vertical-align: super; }
+    .h-stat-lbl {
+      font-family: var(--b);
+      font-size: 12.5px; font-weight: 400;
+      color: var(--l-muted); line-height: 1.45;
+      text-align: center;
+    }
+    /* Hero bottom wave into next section */
+    .hero-wave {
+      width: 100%; height: 100px;
+      display: block;
+      margin-bottom: -1px;
+      position: relative; z-index: 2;
+    }
+
+    /* ── SHARED ── */
+    .sec { padding: 96px 40px; }
+    .sec-l { background: var(--l-bg); }
+    .sec-la { background: var(--l-alt); }
+    .sec-d { background: var(--d-bg); }
+
+    .inner { max-width: 1100px; margin: 0 auto; }
+
+    /* Section label pill */
+    .sec-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--b);
+      font-size: 12.5px; font-weight: 500;
+      letter-spacing: .04em; text-transform: uppercase;
+      padding: 6px 16px; border-radius: 50px;
+      margin-bottom: 20px;
+    }
+    .sec-pill-l { background: var(--red-soft); color: var(--red); border: 1px solid var(--red-border); }
+    .sec-pill-d { background: rgba(212,35,33,.15); color: #ff8f8e; border: 1px solid rgba(212,35,33,.3); }
+
+    .sec-h {
+      font-family: var(--h);
+      font-weight: 800;
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.15;
+      letter-spacing: -.025em;
+      margin-bottom: 14px;
+    }
+    .sec-h-l { color: var(--l-text); }
+    .sec-h-d { color: var(--d-text); }
+    .sec-h span { color: var(--red); }
+
+    .sec-p {
+      font-family: var(--b);
+      font-size: 17px; font-weight: 300;
+      line-height: 1.85; max-width: 520px;
+      margin-bottom: 56px;
+    }
+    .sec-p-l { color: var(--l-sub); }
+    .sec-p-d { color: var(--d-sub); }
+
+    /* ── 01 FOUNDATION — light alt ── */
+    .f-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+    }
+    .f-card {
+      background: var(--l-card);
+      border: 1px solid var(--l-border);
+      border-radius: var(--r-lg);
+      padding: 36px 30px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow .25s, transform .25s;
+    }
+    .f-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+    .f-icon {
+      width: 48px; height: 48px;
+      background: var(--red-soft);
+      border-radius: var(--r-md);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 22px;
+    }
+    .f-icon svg { width: 22px; height: 22px; stroke: var(--red); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .f-card h3 {
+      font-family: var(--h);
+      font-weight: 700; font-size: 18px;
+      color: var(--l-text); margin-bottom: 14px;
+      letter-spacing: -.01em;
+    }
+    .f-card p, .f-card li {
+      font-family: var(--b);
+      font-size: 14.5px; font-weight: 400;
+      color: var(--l-sub); line-height: 1.8;
+      margin-bottom: 8px;
+    }
+    .f-card p:last-child { margin-bottom: 0; }
+    .f-card ul { padding-left: 18px; }
+    .f-card li::marker { color: var(--red); }
+
+    /* ── 02 USE CASES — dark ── */
+    .uc-list { display: flex; flex-direction: column; gap: 0; }
+    .uc-item {
+      display: flex; align-items: center; gap: 28px;
+      padding: 26px 32px;
+      background: var(--d-card);
+      border: 1px solid var(--d-border);
+      border-radius: var(--r-md);
+      margin-bottom: 12px;
+      transition: background .2s, border-color .2s;
+      cursor: default;
+    }
+    .uc-item:last-child { margin-bottom: 0; }
+    .uc-item:hover { background: #252840; border-color: rgba(212,35,33,.3); }
+    .uc-item:hover .uc-num { color: var(--red); }
+    .uc-num {
+      font-family: var(--h);
+      font-weight: 800; font-size: 15px;
+      color: var(--d-muted);
+      width: 32px; flex-shrink: 0;
+      transition: color .2s;
+    }
+    .uc-divider {
+      width: 1px; height: 32px;
+      background: var(--d-border); flex-shrink: 0;
+    }
+    .uc-text {
+      font-family: var(--b);
+      font-size: 16px; font-weight: 400;
+      color: var(--d-sub); flex: 1; line-height: 1.5;
+    }
+    .uc-arrow { display: none; }
+
+    /* ── 03 FINDINGS — light ── */
+    .findings-layout {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    }
+    .find-big {
+      background: var(--l-text);
+      border-radius: var(--r-xl);
+      padding: 48px 44px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      min-height: 380px;
+    }
+    .find-big-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(212,35,33,.2);
+      color: #ff8f8e;
+      font-family: var(--b);
+      font-size: 12px; font-weight: 500;
+      padding: 5px 14px; border-radius: 50px;
+      width: fit-content;
+    }
+    .find-big-num {
+      font-family: var(--h);
+      font-weight: 800; font-size: 120px;
+      line-height: .88; color: #fff;
+      letter-spacing: -.04em;
+      display: flex; align-items: baseline; gap: 4px;
+    }
+    .find-big-num .num-h {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--red);
+      letter-spacing: 0;
+      line-height: 1;
+    }
+    .find-big-p {
+      font-family: var(--b);
+      font-size: 14px; font-weight: 300;
+      color: rgba(255,255,255,.5); line-height: 1.8;
+      max-width: 280px; margin-top: 16px;
+    }
+    .find-cards-col { display: flex; flex-direction: column; gap: 14px; }
+    .find-card {
+      background: var(--l-bg);
+      border: 1px solid var(--l-border);
+      border-radius: var(--r-lg);
+      padding: 28px 30px;
+      box-shadow: var(--shadow-sm);
+      flex: 1;
+    }
+    .find-card-tag {
+      font-family: var(--b);
+      font-size: 11.5px; font-weight: 500;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--l-muted); margin-bottom: 10px;
+    }
+    .find-month {
+      font-family: var(--h);
+      font-weight: 800; font-size: 44px;
+      line-height: 1; letter-spacing: -.02em;
+    }
+    .find-month.red { color: var(--red); }
+    .find-month.grey { color: #22c55e; }
+    .find-card p {
+      font-family: var(--b);
+      font-size: 14px; font-weight: 400;
+      color: var(--l-sub); margin-top: 10px; line-height: 1.75;
+    }
+    .insight-cards {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin-top: 16px;
+    }
+    .insight-card {
+      background: var(--l-bg);
+      border: 1px solid var(--l-border);
+      border-radius: 16px;
+      padding: 28px 32px 28px 32px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      display: flex; align-items: flex-start; gap: 20px;
+      transition: box-shadow .2s;
+    }
+    .insight-card:hover { box-shadow: var(--shadow-md); }
+    .insight-card-body { flex: 1; }
+    .insight-card p {
+      font-family: var(--b);
+      font-size: 15px; font-weight: 400;
+      color: var(--l-sub); line-height: 1.85;
+    }
+    .insight-card strong { font-weight: 600; color: var(--l-text); }
+    .insight-card-icon {
+      flex-shrink: 0;
+      width: 40px; height: 40px;
+      background: var(--red-soft);
+      border: 1px solid var(--red-border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .insight-card-icon svg {
+      width: 18px; height: 18px;
+      stroke: var(--red); fill: none;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ── 04 PATTERNS — dark ── */
+    .chart-grid-1 { margin-bottom: 16px; }
+    .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .c-block {
+      background: var(--d-card);
+      border: 1px solid var(--d-border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .c-head {
+      padding: 22px 28px;
+      border-bottom: 1px solid var(--d-border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .c-head h3 {
+      font-family: var(--h);
+      font-weight: 700; font-size: 16px;
+      color: var(--d-text); letter-spacing: -.01em;
+    }
+    .peaks { display: flex; gap: 6px; flex-wrap: wrap; }
+    .peak-pill {
+      font-family: var(--b);
+      font-size: 11.5px; font-weight: 500;
+      background: rgba(138,43,226,0.18);
+      color: #c4a0ff;
+      border: 1px solid rgba(138,43,226,0.4);
+      padding: 4px 11px; border-radius: 50px;
+    }
+    .c-ph {
+      height: 280px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 39px, rgba(255,255,255,.03) 40px),
+        repeating-linear-gradient(
+        90deg, transparent, transparent 79px, rgba(255,255,255,.03) 80px);
+    }
+    .c-ph-sm { height: 220px; }
+    .c-ph-icon {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 1.5px dashed rgba(255,255,255,.12);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .c-ph-icon svg { width: 20px; height: 20px; stroke: rgba(255,255,255,.2); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .c-ph-label {
+      font-family: var(--b);
+      font-size: 12px; font-weight: 500;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: rgba(255,255,255,.14);
+    }
+    .c-foot {
+      padding: 14px 28px;
+      border-top: 1px solid var(--d-border);
+      display: flex; flex-wrap: wrap;
+      row-gap: 6px; column-gap: 0;
+      align-items: center;
+    }
+    .c-tag {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--b);
+      font-size: 13px; font-weight: 400;
+      color: var(--d-sub);
+      padding: 4px 14px 4px 0;
+    }
+    .c-tag::before {
+      content: ''; width: 6px; height: 6px;
+      background: var(--red); border-radius: 50%; flex-shrink: 0;
+    }
+    .c-tag-green::before { background: #22c55e; }
+    .c-tag-purple::before { background: rgba(138,43,226,0.9); }
+
+    /* ── 05 IMPACT — light alt ── */
+    .impact-layout {
+      display: grid; grid-template-columns: 1fr 300px; gap: 32px;
+      align-items: stretch;
+    }
+    .impact-charts {
+      display: flex; flex-direction: column;
+      height: 100%;
+    }
+    .c-block-l {
+      background: var(--l-card);
+      border: 1px solid var(--l-border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      display: flex; flex-direction: column;
+      flex: 1;
+    }
+    #chart-wasted {
+      flex: 1;
+      min-height: 0;
+    }
+    .impact-stats {
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .impact-stats .i-stat { flex: 1; }
+    .c-head-l {
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--l-border);
+    }
+    .c-head-l h3 {
+      font-family: var(--h);
+      font-weight: 700; font-size: 16px;
+      color: var(--l-text); letter-spacing: -.01em;
+    }
+    .c-ph-l {
+      height: 250px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 39px, rgba(15,18,33,.03) 40px),
+        repeating-linear-gradient(
+        90deg, transparent, transparent 79px, rgba(15,18,33,.03) 80px);
+    }
+    .c-ph-l .c-ph-icon {
+      border-color: rgba(15,18,33,.12);
+    }
+    .c-ph-l .c-ph-icon svg { stroke: rgba(15,18,33,.2); }
+    .c-ph-l .c-ph-label { color: rgba(15,18,33,.18); }
+    .c-foot-l {
+      padding: 14px 28px;
+      border-top: 1px solid var(--l-border);
+      display: flex; flex-wrap: wrap; gap: 16px;
+    }
+    .c-tag-l {
+      display: flex; align-items: center; gap: 7px;
+      font-family: var(--b);
+      font-size: 13px; font-weight: 400; color: var(--l-sub);
+    }
+    .c-tag-l::before {
+      content: ''; width: 5px; height: 5px;
+      background: var(--red); border-radius: 50%; flex-shrink: 0;
+    }
+
+    .impact-stats { display: flex; flex-direction: column; gap: 14px; }
+    .i-stat {
+      border-radius: var(--r-lg);
+      padding: 26px 24px;
+    }
+    .i-stat-plain {
+      background: var(--l-card);
+      border: 1px solid var(--l-border);
+      box-shadow: var(--shadow-sm);
+    }
+    .i-stat-dark {
+      background: var(--l-text);
+    }
+    .i-stat-red {
+      background: var(--red);
+    }
+    .i-lbl {
+      font-family: var(--b);
+      font-size: 12px; font-weight: 500;
+      letter-spacing: .06em; text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .i-stat-plain .i-lbl { color: var(--l-muted); }
+    .i-stat-dark .i-lbl { color: rgba(255,255,255,.45); }
+    .i-stat-red  .i-lbl { color: rgba(255,255,255,.65); }
+    .i-val {
+      font-family: var(--h);
+      font-weight: 800; font-size: 46px;
+      line-height: 1; letter-spacing: -.025em;
+    }
+    .i-stat-plain .i-val { color: var(--l-text); }
+    .i-stat-dark  .i-val { color: #fff; }
+    .i-stat-red   .i-val { color: #fff; }
+    .i-val small { font-size: 20px; font-weight: 600; }
+    .i-note {
+      font-family: var(--b);
+      font-size: 13px; font-weight: 400;
+      margin-top: 8px; line-height: 1.7;
+    }
+    .i-stat-plain .i-note { color: var(--l-muted); }
+    .i-stat-dark  .i-note { color: rgba(255,255,255,.45); }
+    .i-stat-red   .i-note { color: rgba(255,255,255,.7); }
+
+    /* ── COST BANNER ── */
+    .cost-banner {
+      margin-top: 40px;
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      display: grid; grid-template-columns: 1fr 1fr;
+    }
+    .cost-l {
+      background: var(--red);
+      padding: 60px 52px;
+    }
+    .cost-l-eyebrow {
+      font-family: var(--b);
+      font-size: 12px; font-weight: 500;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: rgba(255,255,255,.6);
+      margin-bottom: 16px;
+    }
+    .cost-l h2 {
+      font-family: var(--h);
+      font-weight: 800; font-size: 44px;
+      line-height: 1.15; color: #fff;
+      letter-spacing: -.025em;
+    }
+    .cost-l p {
+      font-family: var(--b);
+      font-size: 15px; font-weight: 300;
+      color: rgba(255,255,255,.65);
+      margin-top: 16px; line-height: 1.85;
+      max-width: 360px;
+    }
+    .cost-r {
+      background: var(--l-text);
+      padding: 60px 52px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .cost-amount {
+      font-family: var(--h);
+      font-weight: 800; font-size: 64px;
+      color: #fff; line-height: 1;
+      letter-spacing: -.03em;
+    }
+    .cost-currency {
+      font-family: var(--b);
+      font-size: 14px; font-weight: 400;
+      color: rgba(255,255,255,.45);
+      letter-spacing: .06em; margin-top: 10px;
+    }
+    .cost-gdp-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(212,35,33,.2);
+      border: 1px solid rgba(212,35,33,.35);
+      color: #ff9998;
+      font-family: var(--b);
+      font-size: 13px; font-weight: 500;
+      padding: 6px 16px; border-radius: 50px;
+      margin-top: 20px; width: fit-content;
+    }
+    .cost-gdp-pill::before {
+      content: ''; width: 6px; height: 6px;
+      background: var(--red); border-radius: 50%;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--d-bg);
+      border-top: 1px solid var(--d-border);
+      padding: 48px 40px;
+    }
+    .foot-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 24px;
+    }
+    .foot-brand {
+      display: flex; align-items: center; gap: 0;
+    }
+    .foot-logo-svg {
+      height: 28px;
+      width: auto;
+    }
+    .foot-links { display: flex; gap: 20px; list-style: none; flex-wrap: wrap; }
+    .foot-links a {
+      font-family: var(--b);
+      font-size: 13.5px; font-weight: 400;
+      color: var(--d-muted); text-decoration: none;
+      transition: color .18s;
+      white-space: nowrap;
+    }
+    .foot-links a:hover { color: var(--d-text); }
+    .foot-copy {
+      font-family: var(--b);
+      font-size: 13px; font-weight: 400;
+      color: var(--d-muted);
+    }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity .55s ease, transform .55s ease;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    .reveal-d2 { transition-delay: .1s; }
+    .reveal-d3 { transition-delay: .18s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      nav { padding: 0; }
+      .nav-inner { padding: 0 20px; max-width: 100%; }
+      .nav-links { display: none !important; }
+      .nav-cta { display: none !important; }
+      .nav-hamburger { display: flex !important; }
+      .sec { padding: 72px 20px; }
+      .f-grid { grid-template-columns: 1fr; gap: 16px; }
+      .findings-layout { grid-template-columns: 1fr; }
+      .insight-cards { grid-template-columns: 1fr; }
+      .chart-grid-2 { grid-template-columns: 1fr; }
+      .impact-layout { grid-template-columns: 1fr; }
+      .cost-banner { grid-template-columns: 1fr; }
+      .foot-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .hero { padding: 72px 20px 0; }
+      .hero-stats-row { flex-direction: column; gap: 0; border-radius: var(--r-lg); }
+      .h-stat { border-bottom: 1px solid var(--l-border); }
+      .h-stat:last-child { border-bottom: none; }
+      /* Tighter use-case rows */
+      .uc-item { gap: 16px; padding: 20px 16px; }
+      .uc-num { font-size: 32px; width: 28px; }
+    }
+    @media (max-width: 640px) {
+      html, body { overflow-x: hidden; }
+      .hero-h1 { font-size: 40px; }
+      .sec-h { font-size: 30px; }
+      .find-big-num { font-size: 80px; }
+      .cost-amount { font-size: 48px; }
+      .sec { padding: 60px 16px; }
+      nav { padding: 0; }
+      .nav-inner { padding: 0 16px; }
+      .hero { padding: 60px 16px 0; }
+      /* Use cases: tighter gap, hide arrow */
+      .uc-item { gap: 24px; padding: 18px 14px; }
+      .uc-num { font-size: 28px; width: 24px; }
+      .uc-divider { display: none; }
+      .uc-text { font-size: 15px; }
+      .uc-arrow { display: none; }
+      /* Charts */
+      .c-head { padding: 18px 18px; flex-direction: column; align-items: flex-start; }
+      .c-foot, .c-foot-l { padding: 12px 18px; gap: 10px; }
+      .chart-ft { padding: 12px 18px; }
+      /* Cost banner */
+      .cost-l, .cost-r { padding: 40px 28px; }
+      .cost-l h2 { font-size: 34px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Year transition overlay -->
+<div id="yearOverlay">
+  <svg class="yo-logo" viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg">
+    <path d="M187.194353,0 C187.194353,0 187.962353,18.149 170.901353,20.55 L170.901353,0 L187.194353,0 Z" fill="#99BB1F"/>
+    <path d="M67.0654527,103.0996 L49.4924527,103.0996 L49.4924527,46.7646 C49.4924527,44.5566 49.0764527,42.5076 48.2124527,40.5556 C47.3794527,38.6026 46.2284527,36.9376 44.7874527,35.4976 C43.3474527,34.0576 41.6504527,32.9366 39.7304527,32.0726 C37.8094527,31.2406 35.7294527,30.7926 33.5204527,30.7926 C31.3114527,30.7926 29.2634527,31.2086 27.3104527,32.0086 C25.3574527,32.8086 23.6934527,33.9296 22.2534527,35.3696 C20.8134527,36.8096 19.6924527,38.4746 18.8284527,40.3626 C17.9644527,42.2516 17.5474527,44.2996 17.5474527,46.5086 C17.5474527,48.7176 17.9644527,50.7656 18.7644527,52.7186 C19.5644527,54.6706 20.6854527,56.3346 22.1254527,57.7756 C23.5654527,59.2156 25.2304527,60.3356 27.1184527,61.2006 C29.0074527,62.0336 31.0554527,62.4496 33.2644527,62.4496 C37.0734527,62.4496 40.2744527,61.3926 42.8664527,59.2806 L42.8664527,78.8696 C39.6664527,79.7976 36.3694527,80.2456 33.0084527,80.2456 C28.4624527,80.2456 24.1414527,79.3496 20.1084527,77.5886 C16.0754527,75.8286 12.5544527,73.3956 9.54545271,70.3236 C6.56845271,67.2496 4.20045271,63.6646 2.47145271,59.5686 C0.74345271,55.4706 -0.08854729,51.1176 0.00745271002,46.4766 C0.00745271002,41.8356 0.90345271,37.5146 2.66445271,33.4496 C4.42445271,29.4156 6.82545271,25.8626 9.86545271,22.8226 C12.9064527,19.7816 16.4274527,17.4126 20.4924527,15.6836 C24.5254527,13.9556 28.8784527,13.0916 33.5204527,13.0916 C38.1614527,13.0916 42.5144527,13.9876 46.6114527,15.7476 C50.7094527,17.5086 54.2624527,19.9096 57.3024527,22.9506 C60.3434527,25.9916 62.7124527,29.5436 64.4404527,33.6416 C66.1694527,37.7386 67.0334527,42.0916 67.0334527,46.7326 L67.0334527,103.0996 L67.0654527,103.0996 Z" fill="#D42321"/>
+    <path d="M168.724653,43.0835 C168.724653,43.5955 168.756653,44.1405 168.788653,44.7165 C168.821653,45.2925 168.853653,45.9005 168.853653,46.4765 L168.853653,80.2465 L151.024653,80.2465 L151.024653,46.8605 C151.024653,44.7485 150.736653,42.7315 150.192653,40.7795 C149.647653,38.8265 148.847653,37.1295 147.790653,35.6575 C146.735653,34.1855 145.454653,33.0335 143.917653,32.1685 C142.381653,31.3365 140.685653,30.8885 138.733653,30.8885 C135.276653,30.8885 132.586653,32.3285 130.634653,35.1775 C128.682653,38.0585 127.689653,41.8035 127.593653,46.4445 L127.593653,80.2135 L110.020653,80.2135 L110.020653,46.8605 C110.020653,42.0595 109.060653,38.1865 107.108653,35.2735 C105.155653,32.3605 102.434653,30.9205 98.8826527,30.9205 C97.0256527,30.9205 95.3286527,31.3365 93.8246527,32.2005 C92.3206527,33.0335 91.0076527,34.1855 89.9196527,35.6255 C88.8316527,37.0655 87.9676527,38.7625 87.3916527,40.6835 C86.8146527,42.6355 86.4946527,44.6525 86.4946527,46.7645 L86.4946527,80.2775 L69.0496527,80.2775 L69.0496527,46.4765 C69.0496527,41.8355 69.7866527,37.5145 71.2586527,33.4495 C72.7306527,29.4165 74.8116527,25.8625 77.4686527,22.8225 C80.1246527,19.7815 83.3256527,17.4125 87.0706527,15.6845 C90.8156527,13.9555 94.9766527,13.0915 99.5226527,13.0915 C103.075653,13.0915 106.468653,13.9235 109.701653,15.5565 C112.933653,17.1885 115.974653,19.1095 118.759653,21.3175 C121.448653,19.1415 124.392653,17.2205 127.625653,15.5565 C130.827653,13.9235 134.379653,13.0915 138.252653,13.0915 C142.541653,13.0915 146.479653,13.8595 150.064653,15.3645 C153.649653,16.8685 156.753653,18.9805 159.346653,21.7015 C161.971653,24.3905 164.051653,27.5915 165.684653,31.2405 C167.316653,34.9215 168.308653,38.8585 168.724653,43.0835" fill="#D42321"/>
+    <path d="M223.332053,30.7925 C221.123053,30.7925 219.075053,31.2085 217.122053,32.0725 C215.170053,32.9045 213.505053,34.0575 212.064053,35.4975 C210.624053,36.9385 209.504053,38.6025 208.704053,40.5555 C207.903053,42.5075 207.487053,44.5565 207.487053,46.7645 C207.487053,48.9735 207.903053,51.0215 208.736053,52.9745 C209.568053,54.9265 210.721053,56.5915 212.161053,58.0325 C213.602053,59.4715 215.266053,60.5925 217.154053,61.3925 C219.043053,62.1935 221.091053,62.6095 223.300053,62.6095 L239.240053,62.6095 L239.240053,80.3095 L223.300053,80.3095 C218.658053,80.3095 214.306053,79.4455 210.272053,77.7165 C206.207053,75.9885 202.686053,73.6205 199.645053,70.5795 C196.604053,67.5385 194.204053,63.9855 192.443053,59.8885 C190.683053,55.7915 189.787053,51.4385 189.787053,46.7965 C189.787053,42.1555 190.651053,37.8025 192.380053,33.7055 C194.108053,29.6075 196.477053,26.0555 199.518053,23.0145 C202.559053,19.9735 206.111053,17.5725 210.208053,15.8125 C214.306053,14.0515 218.658053,13.1555 223.300053,13.1555 L239.240053,13.1555 L239.240053,30.8565 L223.332053,30.8565 L223.332053,30.7925 Z" fill="#D42321"/>
+    <path d="M187.961953,7.7783 L187.961953,80.2463 L170.900953,80.2463 L170.900953,24.1343 C179.768953,23.5263 186.905953,16.6123 187.961953,7.7783" fill="#D42321"/>
+  </svg>
+  <div class="yo-gauge-wrap">
+    <svg class="yo-gauge" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <!-- Track ring -->
+      <circle cx="60" cy="60" r="48" fill="none" stroke="#e8eaf0" stroke-width="5"/>
+      <!-- Animated fill arc -->
+      <circle cx="60" cy="60" r="48" fill="none" stroke="#D42321" stroke-width="5"
+        stroke-linecap="round"
+        stroke-dasharray="301.6"
+        stroke-dashoffset="301.6"
+        transform="rotate(-90 60 60)"
+        class="yo-arc"/>
+      <!-- Tick marks -->
+      <line x1="60" y1="8"  x2="60" y2="18" stroke="#D42321" stroke-width="3" stroke-linecap="round" transform="rotate(-60 60 60)"/>
+      <line x1="60" y1="8"  x2="60" y2="18" stroke="#D42321" stroke-width="3" stroke-linecap="round"/>
+      <line x1="60" y1="8"  x2="60" y2="18" stroke="#D42321" stroke-width="3" stroke-linecap="round" transform="rotate(60 60 60)"/>
+
+    </svg>
+    <span class="yo-year-label" id="yoYearLabel"></span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">
+      <svg class="nav-logo-svg" viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg">
+        <path d="M187.194353,0 C187.194353,0 187.962353,18.149 170.901353,20.55 L170.901353,0 L187.194353,0 Z" fill="#99BB1F"/>
+        <path d="M67.0654527,103.0996 L49.4924527,103.0996 L49.4924527,46.7646 C49.4924527,44.5566 49.0764527,42.5076 48.2124527,40.5556 C47.3794527,38.6026 46.2284527,36.9376 44.7874527,35.4976 C43.3474527,34.0576 41.6504527,32.9366 39.7304527,32.0726 C37.8094527,31.2406 35.7294527,30.7926 33.5204527,30.7926 C31.3114527,30.7926 29.2634527,31.2086 27.3104527,32.0086 C25.3574527,32.8086 23.6934527,33.9296 22.2534527,35.3696 C20.8134527,36.8096 19.6924527,38.4746 18.8284527,40.3626 C17.9644527,42.2516 17.5474527,44.2996 17.5474527,46.5086 C17.5474527,48.7176 17.9644527,50.7656 18.7644527,52.7186 C19.5644527,54.6706 20.6854527,56.3346 22.1254527,57.7756 C23.5654527,59.2156 25.2304527,60.3356 27.1184527,61.2006 C29.0074527,62.0336 31.0554527,62.4496 33.2644527,62.4496 C37.0734527,62.4496 40.2744527,61.3926 42.8664527,59.2806 L42.8664527,78.8696 C39.6664527,79.7976 36.3694527,80.2456 33.0084527,80.2456 C28.4624527,80.2456 24.1414527,79.3496 20.1084527,77.5886 C16.0754527,75.8286 12.5544527,73.3956 9.54545271,70.3236 C6.56845271,67.2496 4.20045271,63.6646 2.47145271,59.5686 C0.74345271,55.4706 -0.08854729,51.1176 0.00745271002,46.4766 C0.00745271002,41.8356 0.90345271,37.5146 2.66445271,33.4496 C4.42445271,29.4156 6.82545271,25.8626 9.86545271,22.8226 C12.9064527,19.7816 16.4274527,17.4126 20.4924527,15.6836 C24.5254527,13.9556 28.8784527,13.0916 33.5204527,13.0916 C38.1614527,13.0916 42.5144527,13.9876 46.6114527,15.7476 C50.7094527,17.5086 54.2624527,19.9096 57.3024527,22.9506 C60.3434527,25.9916 62.7124527,29.5436 64.4404527,33.6416 C66.1694527,37.7386 67.0334527,42.0916 67.0334527,46.7326 L67.0334527,103.0996 L67.0654527,103.0996 Z" fill="#D42321"/>
+        <path d="M168.724653,43.0835 C168.724653,43.5955 168.756653,44.1405 168.788653,44.7165 C168.821653,45.2925 168.853653,45.9005 168.853653,46.4765 L168.853653,80.2465 L151.024653,80.2465 L151.024653,46.8605 C151.024653,44.7485 150.736653,42.7315 150.192653,40.7795 C149.647653,38.8265 148.847653,37.1295 147.790653,35.6575 C146.735653,34.1855 145.454653,33.0335 143.917653,32.1685 C142.381653,31.3365 140.685653,30.8885 138.733653,30.8885 C135.276653,30.8885 132.586653,32.3285 130.634653,35.1775 C128.682653,38.0585 127.689653,41.8035 127.593653,46.4445 L127.593653,80.2135 L110.020653,80.2135 L110.020653,46.8605 C110.020653,42.0595 109.060653,38.1865 107.108653,35.2735 C105.155653,32.3605 102.434653,30.9205 98.8826527,30.9205 C97.0256527,30.9205 95.3286527,31.3365 93.8246527,32.2005 C92.3206527,33.0335 91.0076527,34.1855 89.9196527,35.6255 C88.8316527,37.0655 87.9676527,38.7625 87.3916527,40.6835 C86.8146527,42.6355 86.4946527,44.6525 86.4946527,46.7645 L86.4946527,80.2775 L69.0496527,80.2775 L69.0496527,46.4765 C69.0496527,41.8355 69.7866527,37.5145 71.2586527,33.4495 C72.7306527,29.4165 74.8116527,25.8625 77.4686527,22.8225 C80.1246527,19.7815 83.3256527,17.4125 87.0706527,15.6845 C90.8156527,13.9555 94.9766527,13.0915 99.5226527,13.0915 C103.075653,13.0915 106.468653,13.9235 109.701653,15.5565 C112.933653,17.1885 115.974653,19.1095 118.759653,21.3175 C121.448653,19.1415 124.392653,17.2205 127.625653,15.5565 C130.827653,13.9235 134.379653,13.0915 138.252653,13.0915 C142.541653,13.0915 146.479653,13.8595 150.064653,15.3645 C153.649653,16.8685 156.753653,18.9805 159.346653,21.7015 C161.971653,24.3905 164.051653,27.5915 165.684653,31.2405 C167.316653,34.9215 168.308653,38.8585 168.724653,43.0835" fill="#D42321"/>
+        <path d="M223.332053,30.7925 C221.123053,30.7925 219.075053,31.2085 217.122053,32.0725 C215.170053,32.9045 213.505053,34.0575 212.064053,35.4975 C210.624053,36.9385 209.504053,38.6025 208.704053,40.5555 C207.903053,42.5075 207.487053,44.5565 207.487053,46.7645 C207.487053,48.9735 207.903053,51.0215 208.736053,52.9745 C209.568053,54.9265 210.721053,56.5915 212.161053,58.0325 C213.602053,59.4715 215.266053,60.5925 217.154053,61.3925 C219.043053,62.1935 221.091053,62.6095 223.300053,62.6095 L239.240053,62.6095 L239.240053,80.3095 L223.300053,80.3095 C218.658053,80.3095 214.306053,79.4455 210.272053,77.7165 C206.207053,75.9885 202.686053,73.6205 199.645053,70.5795 C196.604053,67.5385 194.204053,63.9855 192.443053,59.8885 C190.683053,55.7915 189.787053,51.4385 189.787053,46.7965 C189.787053,42.1555 190.651053,37.8025 192.380053,33.7055 C194.108053,29.6075 196.477053,26.0555 199.518053,23.0145 C202.559053,19.9735 206.111053,17.5725 210.208053,15.8125 C214.306053,14.0515 218.658053,13.1555 223.300053,13.1555 L239.240053,13.1555 L239.240053,30.8565 L223.332053,30.8565 L223.332053,30.7925 Z" fill="#D42321"/>
+        <path d="M187.961953,7.7783 L187.961953,80.2463 L170.900953,80.2463 L170.900953,24.1343 C179.768953,23.5263 186.905953,16.6123 187.961953,7.7783" fill="#D42321"/>
+      </svg>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#foundation">Foundation</a></li>
+      <li><a href="#use-cases">Use Cases</a></li>
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#patterns">Patterns</a></li>
+      <li><a href="#impact">Impact</a></li>
+    </ul>
+    <div class="nav-links-right">
+      <div class="year-switcher">
+        <button class="year-btn active" onclick="switchYear(2024)">2024</button>
+        <button class="year-btn" onclick="switchYear(2025)">2025</button>
+      </div>
+      <button id="navHamburger" aria-label="Open menu" style="display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;background:none;border:none;outline:none;margin-left:12px;">
+        <span style="display:block;width:22px;height:2px;background:#0f1221;border-radius:2px;"></span>
+        <span style="display:block;width:22px;height:2px;background:#0f1221;border-radius:2px;"></span>
+        <span style="display:block;width:22px;height:2px;background:#0f1221;border-radius:2px;"></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile nav drawer -->
+<div class="nav-drawer" id="navDrawer">
+  <a href="#foundation" onclick="closeDrawer()">Foundation</a>
+  <a href="#use-cases" onclick="closeDrawer()">Use Cases</a>
+  <a href="#findings" onclick="closeDrawer()">Findings</a>
+  <a href="#patterns" onclick="closeDrawer()">Patterns</a>
+  <a href="#impact" onclick="closeDrawer()">Impact</a>
+  <div style="padding: 14px 0 4px; border-top: 1px solid var(--l-border); margin-top: 4px;">
+    <div style="font-family:var(--b);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--l-muted);margin-bottom:10px;">Report Year</div>
+    <div class="year-switcher" style="width:fit-content;">
+      <button class="year-btn active" id="drawerBtn2024" onclick="switchYear(2024)">2024</button>
+      <button class="year-btn" id="drawerBtn2025" onclick="switchYear(2025)">2025</button>
+    </div>
+  </div>
+</div>
+
+<!-- Fullscreen chart modal -->
+<div class="fs-overlay" id="fsOverlay" onclick="handleOverlayClick(event)">
+  <div class="fs-modal">
+    <div class="fs-modal-head" id="fsModalHead">
+      <h3 id="fsTitle"></h3>
+      <div style="display:flex;align-items:center;gap:12px;margin-left:auto;">
+        <div id="fsPeaksSlot" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+        <button class="fs-close" onclick="closeFullscreen()">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="fs-modal-body" id="fsBody"></div>
+  </div>
+</div>
+<section class="hero">
+  <div class="hero-bg-img"></div>
+  <div class="hero-inner">
+    <div class="hero-pill">
+      <span class="hero-pill-dot"></span>
+      Qatar Mobility Innovations Center
+    </div>
+    <h1 class="hero-h1">Qatar Traffic<br/><span>Report 2024</span></h1>
+    <p class="hero-desc">A comprehensive annual assessment of congestion, mobility behavior, and economic impact across Qatar — powered by the Wamd™ IoT Platform since 2014.</p>
+    <div class="hero-stats-row">
+      <div class="h-stat">
+        <div class="h-stat-val">11.5<sup>B</sup></div>
+        <div class="h-stat-lbl">Raw data records<br/>collected in 2024</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-val">37<sup style="font-size:16px;color:var(--red);">h</sup></div>
+        <div class="h-stat-lbl">Hours wasted<br/>per year</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-val">QR 3.56<sup>B</sup></div>
+        <div class="h-stat-lbl">Total congestion<br/>cost in 2024</div>
+      </div>
+    </div>
+  </div>
+  <svg class="hero-wave" viewBox="0 0 1440 110" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,45 C200,5 550,5 760,55 C970,105 1220,105 1440,45 L1440,110 L0,110 Z" fill="#f7f8fc"/>
+  </svg>
+</section>
+
+<!-- 01 FOUNDATION — light alt -->
+<section id="foundation" class="sec sec-la">
+  <div class="inner">
+    <div class="sec-pill sec-pill-l">01 — Report Foundation</div>
+    <h2 class="sec-h sec-h-l">Platform &amp; <span>Methodology</span></h2>
+    <p class="sec-p sec-p-l">QMIC holds the only comprehensive traffic data bank in Qatar since 2014, enabling continuous monitoring and knowledge-based assessment of national mobility.</p>
+
+    <div class="f-grid">
+      <div class="f-card reveal">
+        <div class="f-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>Strategic Importance</h3>
+        <p>QMIC developed and deployed a comprehensive data platform to support intelligent transport in Qatar, with the only complete traffic data bank in the country.</p>
+        <p>Continuous monitoring and knowledge-based assessment are vital for sustainable national mobility planning. First report published in 2016.</p>
+      </div>
+      <div class="f-card reveal reveal-d2">
+        <div class="f-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        </div>
+        <h3>Wamd™ IoT Platform</h3>
+        <p>The most updated navigable GIS data in Qatar — a live, continuously enriched view of the national road network.</p>
+        <p>Approximately <strong style="font-weight:600;color:var(--l-text);">11.5 billion raw records</strong> were collected in 2024 from QMIC's comprehensive IoT data collection network.</p>
+      </div>
+      <div class="f-card reveal reveal-d3">
+        <div class="f-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Wamd Congestion Index</h3>
+        <p>The WCI ranges from 0–100%, indicating the average speed reduction compared to free-flow speed on any given road segment. WCI is used to determine the:</p>
+        <ul>
+          <li>Most congested segments, streets, districts &amp; zones</li>
+          <li>Wasted hours per year per commuter</li>
+          <li>Total annual congestion cost estimate</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 USE CASES — dark -->
+<section id="use-cases" class="sec sec-d">
+  <div class="inner">
+    <div class="sec-pill sec-pill-d">02 — Use Cases</div>
+    <h2 class="sec-h sec-h-d">How This Data<br/><span>Creates Impact</span></h2>
+    <p class="sec-p sec-p-d">Enabling transport planners, policymakers, and researchers to make evidence-based decisions about Qatar's road network and mobility future.</p>
+
+    <div class="uc-list">
+      <div class="uc-item reveal">
+        <span class="uc-num">01</span>
+        <div class="uc-divider"></div>
+        <span class="uc-text">Assess the impact of road and infrastructure projects on congestion levels across Qatar.</span>
+        <div class="uc-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="uc-item reveal">
+        <span class="uc-num">02</span>
+        <div class="uc-divider"></div>
+        <span class="uc-text">Monitor and identify changes in congestion levels and traffic patterns over time.</span>
+        <div class="uc-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="uc-item reveal">
+        <span class="uc-num">03</span>
+        <div class="uc-divider"></div>
+        <span class="uc-text">Identify congestion hotspots at specified times of day, days of the week, and seasons.</span>
+        <div class="uc-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="uc-item reveal">
+        <span class="uc-num">04</span>
+        <div class="uc-divider"></div>
+        <span class="uc-text">Estimate the economic impact of road congestion on national productivity and GDP.</span>
+        <div class="uc-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="uc-item reveal">
+        <span class="uc-num">05</span>
+        <div class="uc-divider"></div>
+        <span class="uc-text">Assess the impact of mega-events such as FIFA Qatar World Cup 2022 on mobility and congestion behavior.</span>
+        <div class="uc-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 FINDINGS — light -->
+<section id="findings" class="sec sec-l">
+  <div class="inner">
+    <div class="sec-pill sec-pill-l">03 — Key Findings <span style="color:var(--red);">In</span> 2024</div>
+    <h2 class="sec-h sec-h-l">What the Data<br/><span>Reveals</span></h2>
+    <p class="sec-p sec-p-l">Three major factors shaped congestion and mobility in 2024 — post-World Cup legacy, completion of major road projects, and evolving commuter patterns.</p>
+
+    <div class="findings-layout">
+      <div class="find-big reveal">
+        <div class="find-big-badge">Hours wasted per year</div>
+        <div>
+          <div class="find-big-num">37<span class="num-h">h</span></div>
+          <p class="find-big-p">per commuter during weekdays due to congestion — unchanged from 2023, reflecting stable but persistent traffic pressure.</p>
+        </div>
+      </div>
+      <div class="find-cards-col">
+        <div class="find-card reveal">
+          <div class="find-card-tag">Most Congested Month</div>
+          <div class="find-month red">February</div>
+          <p>February recorded the highest congestion index of 2024, driven by peak population activity and cooler weather increasing road usage.</p>
+        </div>
+        <div class="find-card reveal">
+          <div class="find-card-tag">Least Congested Month</div>
+          <div class="find-month grey">July</div>
+          <p>July saw the lowest congestion levels, reflecting seasonal patterns as residents travel abroad during summer months.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-cards">
+      <div class="insight-card reveal">
+        <div class="insight-card-body">
+          <p>There is a <strong>strong correlation between congestion levels and population</strong>, suggesting that private cars remain the primary mode of transport in Qatar.</p>
+        </div>
+        <div class="insight-card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 012 2v7M11 18H8a2 2 0 01-2-2V9"/></svg>
+        </div>
+      </div>
+      <div class="insight-card reveal reveal-d2">
+        <div class="insight-card-body">
+          <p>The impact of <strong>visitors on congestion is moderate</strong> — the correlation with visitor volumes is notably weaker than that with resident population.</p>
+        </div>
+        <div class="insight-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 PATTERNS — dark -->
+<section id="patterns" class="sec sec-d">
+  <div class="inner">
+    <div class="sec-pill sec-pill-d">04 — Congestion Patterns</div>
+    <h2 class="sec-h sec-h-d">Daily &amp; Weekly<br/><span>Trends</span></h2>
+    <p class="sec-p sec-p-d">Congestion follows predictable daily rhythms with three distinct peak windows, and clear variation across the days of the week.</p>
+
+    <div class="chart-grid-1">
+      <div class="c-block reveal">
+        <div class="c-head">
+          <h3>Wamd Congestion Index — Workdays</h3>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div class="peaks">
+              <span class="peak-pill">Morning 7–8 AM</span>
+              <span class="peak-pill">Midday 1–2 PM</span>
+              <span class="peak-pill">Evening 6–7 PM</span>
+            </div>
+            <button class="fs-btn" onclick="openFullscreen('chart-workdays','Wamd Congestion Index — Workdays')">
+              <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3"/></svg>
+              Full Screen
+            </button>
+          </div>
+        </div>
+        <div id="chart-workdays" style="padding: 8px 8px 0;"></div>
+        <div class="c-foot">
+          <span class="c-tag">Three daily peaks on workdays</span>
+          <span class="c-tag c-tag-purple">Morning Peak: 7–8 AM · 12.7%</span>
+          <span class="c-tag c-tag-purple">Midday Peak: 1–2 PM · 12.7%</span>
+          <span class="c-tag c-tag-purple">Evening Peak: 6–7 PM · 13.8%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-grid-2">
+      <div class="c-block reveal">
+        <div class="c-head">
+          <h3>Index by Day of Week</h3>
+          <button class="fs-btn" onclick="openFullscreen('chart-dayofweek','Congestion Index by Day of Week')">
+            <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3"/></svg>
+            Full Screen
+          </button>
+        </div>
+        <div id="chart-dayofweek" style="padding: 8px 8px 0;"></div>
+        <div class="c-foot">
+          <span class="c-tag">Sun–Wed very similar trends</span>
+          <span class="c-tag">Thu slightly different</span>
+          <span class="c-tag">Fri–Sat distinct vs. workdays</span>
+        </div>
+      </div>
+      <div class="c-block reveal reveal-d2">
+        <div class="c-head">
+          <h3>Congestion Index WCI</h3>
+          <button class="fs-btn" onclick="openFullscreen('chart-monthly','Congestion Index WCI')">
+            <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3"/></svg>
+            Full Screen
+          </button>
+        </div>
+        <div id="chart-monthly" style="padding: 8px 8px 0;"></div>
+        <div class="c-foot">
+          <span class="c-tag">February most congested · 14.7%</span>
+          <span class="c-tag c-tag-green">July least congested · 10.5%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 IMPACT — light alt -->
+<section id="impact" class="sec sec-la">
+  <div class="inner">
+    <div class="sec-pill sec-pill-l">05 — Impact of Congestion</div>
+    <h2 class="sec-h sec-h-l">Time &amp; <span>Economic Cost</span></h2>
+    <p class="sec-p sec-p-l">Beyond daily inconvenience, traffic congestion carries measurable economic costs. QMIC's model quantifies both the time lost and the productivity impact across Qatar.</p>
+
+    <div class="impact-layout">
+      <div class="impact-charts">
+        <div class="c-block-l reveal">
+          <div class="c-head-l"><h3>Wasted Time Due to Congestion</h3></div>
+          <div id="chart-wasted" style="padding: 8px 8px 0; flex:1; min-height: 260px;"></div>
+          <div class="c-foot-l">
+            <span class="c-tag-l">10-year trend: 2015–2024</span>
+            <span class="c-tag-l">Peak: 109 hrs in 2016</span>
+            <span class="c-tag-l">Post-World Cup stabilized at 37 hrs</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="impact-stats">
+        <div class="i-stat i-stat-plain reveal">
+          <div class="i-lbl">Avg. Daily Distance</div>
+          <div class="i-val">35<small> km</small></div>
+          <div class="i-note">Average driven per commuter per day in 2024.</div>
+        </div>
+        <div class="i-stat i-stat-dark reveal">
+          <div class="i-lbl">Annual Time Lost</div>
+          <div class="i-val">37<small> hrs</small></div>
+          <div class="i-note">Hours wasted per commuter per year during workdays.</div>
+        </div>
+        <div class="i-stat i-stat-red reveal">
+          <div class="i-lbl">Congestion Cost 2024</div>
+          <div class="i-val" style="font-size:34px;">QR 3.56<small>B</small></div>
+          <div class="i-note">Productivity loss only. ~0.50% of GDP at constant prices.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cost-banner reveal">
+      <div class="cost-l">
+        <div class="cost-l-eyebrow">Total Economic Impact — Qatar 2024</div>
+        <h2>Cost of<br/>Congestion<br/>in Qatar</h2>
+        <p>Calculated using QMIC's internal model based on public records and assumptions, representing productivity loss from time wasted in traffic across the nation.</p>
+      </div>
+      <div class="cost-r">
+        <div class="cost-amount">QR 3.56B</div>
+        <div class="cost-currency">Qatari Riyal — 2024</div>
+        <div class="cost-gdp-pill">≈ 0.50% of GDP at constant prices</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-brand">
+      <svg class="foot-logo-svg" viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg">
+        <path d="M187.194353,0 C187.194353,0 187.962353,18.149 170.901353,20.55 L170.901353,0 L187.194353,0 Z" fill="#99BB1F"/>
+        <path d="M67.0654527,103.0996 L49.4924527,103.0996 L49.4924527,46.7646 C49.4924527,44.5566 49.0764527,42.5076 48.2124527,40.5556 C47.3794527,38.6026 46.2284527,36.9376 44.7874527,35.4976 C43.3474527,34.0576 41.6504527,32.9366 39.7304527,32.0726 C37.8094527,31.2406 35.7294527,30.7926 33.5204527,30.7926 C31.3114527,30.7926 29.2634527,31.2086 27.3104527,32.0086 C25.3574527,32.8086 23.6934527,33.9296 22.2534527,35.3696 C20.8134527,36.8096 19.6924527,38.4746 18.8284527,40.3626 C17.9644527,42.2516 17.5474527,44.2996 17.5474527,46.5086 C17.5474527,48.7176 17.9644527,50.7656 18.7644527,52.7186 C19.5644527,54.6706 20.6854527,56.3346 22.1254527,57.7756 C23.5654527,59.2156 25.2304527,60.3356 27.1184527,61.2006 C29.0074527,62.0336 31.0554527,62.4496 33.2644527,62.4496 C37.0734527,62.4496 40.2744527,61.3926 42.8664527,59.2806 L42.8664527,78.8696 C39.6664527,79.7976 36.3694527,80.2456 33.0084527,80.2456 C28.4624527,80.2456 24.1414527,79.3496 20.1084527,77.5886 C16.0754527,75.8286 12.5544527,73.3956 9.54545271,70.3236 C6.56845271,67.2496 4.20045271,63.6646 2.47145271,59.5686 C0.74345271,55.4706 -0.08854729,51.1176 0.00745271002,46.4766 C0.00745271002,41.8356 0.90345271,37.5146 2.66445271,33.4496 C4.42445271,29.4156 6.82545271,25.8626 9.86545271,22.8226 C12.9064527,19.7816 16.4274527,17.4126 20.4924527,15.6836 C24.5254527,13.9556 28.8784527,13.0916 33.5204527,13.0916 C38.1614527,13.0916 42.5144527,13.9876 46.6114527,15.7476 C50.7094527,17.5086 54.2624527,19.9096 57.3024527,22.9506 C60.3434527,25.9916 62.7124527,29.5436 64.4404527,33.6416 C66.1694527,37.7386 67.0334527,42.0916 67.0334527,46.7326 L67.0334527,103.0996 L67.0654527,103.0996 Z" fill="#ffffff"/>
+        <path d="M168.724653,43.0835 C168.724653,43.5955 168.756653,44.1405 168.788653,44.7165 C168.821653,45.2925 168.853653,45.9005 168.853653,46.4765 L168.853653,80.2465 L151.024653,80.2465 L151.024653,46.8605 C151.024653,44.7485 150.736653,42.7315 150.192653,40.7795 C149.647653,38.8265 148.847653,37.1295 147.790653,35.6575 C146.735653,34.1855 145.454653,33.0335 143.917653,32.1685 C142.381653,31.3365 140.685653,30.8885 138.733653,30.8885 C135.276653,30.8885 132.586653,32.3285 130.634653,35.1775 C128.682653,38.0585 127.689653,41.8035 127.593653,46.4445 L127.593653,80.2135 L110.020653,80.2135 L110.020653,46.8605 C110.020653,42.0595 109.060653,38.1865 107.108653,35.2735 C105.155653,32.3605 102.434653,30.9205 98.8826527,30.9205 C97.0256527,30.9205 95.3286527,31.3365 93.8246527,32.2005 C92.3206527,33.0335 91.0076527,34.1855 89.9196527,35.6255 C88.8316527,37.0655 87.9676527,38.7625 87.3916527,40.6835 C86.8146527,42.6355 86.4946527,44.6525 86.4946527,46.7645 L86.4946527,80.2775 L69.0496527,80.2775 L69.0496527,46.4765 C69.0496527,41.8355 69.7866527,37.5145 71.2586527,33.4495 C72.7306527,29.4165 74.8116527,25.8625 77.4686527,22.8225 C80.1246527,19.7815 83.3256527,17.4125 87.0706527,15.6845 C90.8156527,13.9555 94.9766527,13.0915 99.5226527,13.0915 C103.075653,13.0915 106.468653,13.9235 109.701653,15.5565 C112.933653,17.1885 115.974653,19.1095 118.759653,21.3175 C121.448653,19.1415 124.392653,17.2205 127.625653,15.5565 C130.827653,13.9235 134.379653,13.0915 138.252653,13.0915 C142.541653,13.0915 146.479653,13.8595 150.064653,15.3645 C153.649653,16.8685 156.753653,18.9805 159.346653,21.7015 C161.971653,24.3905 164.051653,27.5915 165.684653,31.2405 C167.316653,34.9215 168.308653,38.8585 168.724653,43.0835" fill="#ffffff"/>
+        <path d="M223.332053,30.7925 C221.123053,30.7925 219.075053,31.2085 217.122053,32.0725 C215.170053,32.9045 213.505053,34.0575 212.064053,35.4975 C210.624053,36.9385 209.504053,38.6025 208.704053,40.5555 C207.903053,42.5075 207.487053,44.5565 207.487053,46.7645 C207.487053,48.9735 207.903053,51.0215 208.736053,52.9745 C209.568053,54.9265 210.721053,56.5915 212.161053,58.0325 C213.602053,59.4715 215.266053,60.5925 217.154053,61.3925 C219.043053,62.1935 221.091053,62.6095 223.300053,62.6095 L239.240053,62.6095 L239.240053,80.3095 L223.300053,80.3095 C218.658053,80.3095 214.306053,79.4455 210.272053,77.7165 C206.207053,75.9885 202.686053,73.6205 199.645053,70.5795 C196.604053,67.5385 194.204053,63.9855 192.443053,59.8885 C190.683053,55.7915 189.787053,51.4385 189.787053,46.7965 C189.787053,42.1555 190.651053,37.8025 192.380053,33.7055 C194.108053,29.6075 196.477053,26.0555 199.518053,23.0145 C202.559053,19.9735 206.111053,17.5725 210.208053,15.8125 C214.306053,14.0515 218.658053,13.1555 223.300053,13.1555 L239.240053,13.1555 L239.240053,30.8565 L223.332053,30.8565 L223.332053,30.7925 Z" fill="#ffffff"/>
+        <path d="M187.961953,7.7783 L187.961953,80.2463 L170.900953,80.2463 L170.900953,24.1343 C179.768953,23.5263 186.905953,16.6123 187.961953,7.7783" fill="#ffffff"/>
+      </svg>
+    </div>
+    <ul class="foot-links">
+      <li><a href="#foundation">Foundation</a></li>
+      <li><a href="#use-cases">Use Cases</a></li>
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#patterns">Patterns</a></li>
+      <li><a href="#impact">Impact</a></li>
+    </ul>
+    <span class="foot-copy">Qatar Traffic Report 2024</span>
+  </div>
+</footer>
+
+<script>
+  /* ── Fullscreen chart ── */
+  let fsChartInstance = null;
+
+  function openFullscreen(chartId, title) {
+    const overlay = document.getElementById('fsOverlay');
+    const body    = document.getElementById('fsBody');
+    const titleEl = document.getElementById('fsTitle');
+
+    // Find parent card block
+    const originalChart = document.getElementById(chartId);
+    const parentBlock   = originalChart ? originalChart.closest('.c-block') : null;
+
+    // Grab header peaks row (exclude the fullscreen button itself)
+    const headerEl  = parentBlock ? parentBlock.querySelector('.c-head') : null;
+    const peaksEl   = headerEl ? headerEl.querySelector('.peaks') : null;
+    const peaksHTML = peaksEl ? peaksEl.outerHTML : '';
+
+    // Grab footer
+    const footerEl   = parentBlock ? parentBlock.querySelector('.c-foot') : null;
+    const footerHTML = footerEl ? footerEl.innerHTML : '';
+
+    // Update modal title
+    titleEl.textContent = title;
+
+    // Inject peaks into modal header if any
+    const modalHead = document.getElementById('fsModalHead');
+    const peaksSlot = document.getElementById('fsPeaksSlot');
+    if (peaksSlot) peaksSlot.innerHTML = peaksHTML;
+
+    // Build modal body: chart + footer
+    body.innerHTML = `
+      <div id="fs-chart-inner" style="flex:1;width:100%;min-height:400px;padding:8px 8px 0;"></div>
+      ${footerHTML ? `
+        <div style="border-top:1px solid rgba(255,255,255,0.08);padding:16px 28px;display:flex;flex-wrap:wrap;gap:0;">
+          ${footerHTML}
+        </div>` : ''}
+    `;
+    body.style.display = 'flex';
+    body.style.flexDirection = 'column';
+
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+      if (window._chartConfigs && window._chartConfigs[chartId]) {
+        const cfg = JSON.parse(JSON.stringify(window._chartConfigs[chartId]));
+        cfg.chart.height = '100%';
+        cfg.chart.width  = '100%';
+        if (fsChartInstance) { fsChartInstance.destroy(); }
+        fsChartInstance = new ApexCharts(document.getElementById('fs-chart-inner'), cfg);
+        fsChartInstance.render();
+      }
+    }, 60);
+  }
+
+  function closeFullscreen() {
+    document.getElementById('fsOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    if (fsChartInstance) { fsChartInstance.destroy(); fsChartInstance = null; }
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('fsOverlay')) closeFullscreen();
+  }
+
+  // Close on Escape key
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFullscreen(); });
+
+    /* ── Year switcher with loading overlay ── */
+  function switchYear(year) {
+    const current = window.location.pathname.includes('qtr2025') ? 2025 : 2024;
+    if (year === current) return;
+
+    const target  = year === 2025 ? 'qtr2025.html' : 'index.html';
+    const overlay = document.getElementById('yearOverlay');
+
+    // Update buttons
+    document.querySelectorAll('.year-btn').forEach(b => {
+      b.classList.toggle('active', b.textContent.trim() === String(year));
+    });
+
+    // Set year in gauge centre
+    const lbl = document.getElementById('yoYearLabel');
+    if (lbl) lbl.textContent = String(year);
+
+    // Reset arc animation
+    const arc = overlay.querySelector('.yo-arc');
+    if (arc) { arc.style.animation = 'none'; void arc.offsetHeight; arc.style.animation = ''; }
+
+    // Show overlay
+    overlay.classList.add('show');
+
+    // Redirect after arc completes
+    setTimeout(() => {
+      sessionStorage.setItem('yearSwitch', '1');
+      window.location.href = target;
+    }, 580);
+  }
+
+  /* ── Entry: fade out overlay if arriving from year switch ── */
+  (function() {
+    if (sessionStorage.getItem('yearSwitch')) {
+      sessionStorage.removeItem('yearSwitch');
+      const overlay = document.getElementById('yearOverlay');
+      const arc = overlay.querySelector('.yo-arc');
+      if (arc) { arc.style.animation = 'none'; void arc.offsetHeight; arc.style.animation = ''; }
+      const lbl = document.getElementById('yoYearLabel');
+      const yr = window.location.pathname.includes('qtr2025') ? '2025' : '2024';
+      if (lbl) lbl.textContent = yr;
+      overlay.classList.add('show');
+      setTimeout(() => {
+        overlay.style.transition = 'opacity .45s ease';
+        overlay.classList.remove('show');
+        overlay.classList.add('hide');
+      }, 300);
+    }
+  })();
+
+  /* ── Hamburger menu ── */
+  const hamburger = document.getElementById('navHamburger');
+  const drawer = document.getElementById('navDrawer');
+  function closeDrawer() { drawer.classList.remove('open'); }
+
+  function updateNav() {
+    if (window.innerWidth <= 1024) {
+      hamburger.style.display = 'flex';
+    } else {
+      hamburger.style.display = 'none';
+      closeDrawer();
+    }
+  }
+  updateNav();
+  window.addEventListener('resize', updateNav);
+
+  hamburger.addEventListener('click', () => drawer.classList.toggle('open'));
+  document.addEventListener('click', e => {
+    if (!hamburger.contains(e.target) && !drawer.contains(e.target)) closeDrawer();
+  });
+
+  /* ── Scroll reveal ── */
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  /* ── Shared hour labels ── */
+  const hours = ['12 AM','1 AM','2 AM','3 AM','4 AM','5 AM','6 AM','7 AM','8 AM','9 AM','10 AM','11 AM','12 PM','1 PM','2 PM','3 PM','4 PM','5 PM','6 PM','7 PM','8 PM','9 PM','10 PM','11 PM'];
+
+  /* ────────────────────────────────────────────────
+     CHART 1 — Wamd Congestion Index (Workdays)
+  ──────────────────────────────────────────────── */
+  window._chartConfigs = {};
+  const mci = [6.43,3.27,2.53,1.99,1.60,7.28,9.15,12.66,11.04,10.44,10.67,10.80,11.19,12.69,12.50,11.15,11.79,13.09,13.76,13.20,12.58,11.96,10.87,9.44];
+
+  const cfg1 = {
+    series: [{ name: 'Congestion Index', data: mci }],
+    chart: { type: 'area', height: 340, background: 'transparent', toolbar: { show: false }, zoom: { enabled: false }, fontFamily: "'DM Sans', sans-serif", animations: { enabled: true, easing: 'easeinout', speed: 800 } },
+    stroke: { curve: 'smooth', width: 2.5, colors: ['#D42321'] },
+    fill: { type: 'gradient', gradient: { shade: 'dark', type: 'vertical', shadeIntensity: 0.5, gradientToColors: ['#D42321'], opacityFrom: 0.2, opacityTo: 0.01, stops: [0, 95] } },
+    markers: { size: 3.5, colors: ['#1e2131'], strokeColors: '#D42321', strokeWidth: 2, hover: { size: 5.5 } },
+    xaxis: { categories: hours, labels: { style: { colors: Array(24).fill('rgba(240,241,247,0.45)'), fontSize: '11px', fontFamily: "'DM Sans', sans-serif" }, rotate: 0 }, axisBorder: { show: false }, axisTicks: { show: false }, crosshairs: { stroke: { color: 'rgba(212,35,33,0.3)', width: 1, dashArray: 4 } } },
+    yaxis: { min: 0, max: 15, tickAmount: 5, labels: { formatter: v => v.toFixed(0) + '%', style: { colors: ['rgba(240,241,247,0.45)'], fontSize: '11px', fontFamily: "'DM Sans', sans-serif" } }, title: { text: 'Avg. Wamd Congestion Index', style: { color: 'rgba(240,241,247,0.3)', fontSize: '11px', fontFamily: "'DM Sans', sans-serif" } } },
+    grid: { borderColor: 'rgba(255,255,255,0.06)', strokeDashArray: 4, xaxis: { lines: { show: false } }, yaxis: { lines: { show: true } }, padding: { top: 10, right: 20, bottom: 0, left: 10 } },
+    dataLabels: { enabled: true, formatter: v => v.toFixed(1) + '%', offsetY: -8, style: { fontSize: '10px', fontFamily: "'DM Sans', sans-serif", fontWeight: '500', colors: ['rgba(240,241,247,0.8)'] }, background: { enabled: false } },
+    tooltip: { theme: 'dark', style: { fontSize: '13px', fontFamily: "'DM Sans', sans-serif" }, y: { formatter: v => v.toFixed(1) + '%', title: { formatter: () => 'WCI: ' } } },
+    annotations: {
+      xaxis: [
+        { x: '7 AM', x2: '8 AM', fillColor: 'rgba(138,43,226,0.55)', borderColor: 'rgba(138,43,226,0.9)', strokeDashArray: 0, label: { text: 'Morning Peak', position: 'bottom', offsetY: -4, style: { color: '#fff', background: 'rgba(108,43,196,0.85)', fontSize: '11px', fontFamily: "'DM Sans', sans-serif", fontWeight: '600', padding: { top: 5, bottom: 5, left: 10, right: 10 }, borderRadius: 4, border: 0 } } },
+        { x: '1 PM', x2: '2 PM', fillColor: 'rgba(138,43,226,0.55)', borderColor: 'rgba(138,43,226,0.9)', strokeDashArray: 0, label: { text: 'Mid-day Peak', position: 'bottom', offsetY: -4, style: { color: '#fff', background: 'rgba(108,43,196,0.85)', fontSize: '11px', fontFamily: "'DM Sans', sans-serif", fontWeight: '600', padding: { top: 5, bottom: 5, left: 10, right: 10 }, borderRadius: 4, border: 0 } } },
+        { x: '6 PM', x2: '7 PM', fillColor: 'rgba(138,43,226,0.55)', borderColor: 'rgba(138,43,226,0.9)', strokeDashArray: 0, label: { text: 'Evening Peak', position: 'bottom', offsetY: -4, style: { color: '#fff', background: 'rgba(108,43,196,0.85)', fontSize: '11px', fontFamily: "'DM Sans', sans-serif", fontWeight: '600', padding: { top: 5, bottom: 5, left: 10, right: 10 }, borderRadius: 4, border: 0 } } },
+      ]
+    },
+    legend: { show: false },
+  };
+  window._chartConfigs['chart-workdays'] = cfg1;
+  new ApexCharts(document.getElementById('chart-workdays'), cfg1).render();
+
+  /* ────────────────────────────────────────────────
+     CHART 2 — WCI by Day of the Week
+  ──────────────────────────────────────────────── */
+  const dowData = {
+    Sunday:    [6.27,3.20,2.38,1.66,1.30,7.30,9.23,12.83,11.15,10.49,10.68,10.74,10.99,12.51,12.45,11.08,11.69,13.00,13.66,12.99,12.26,11.58,10.53,9.13],
+    Monday:    [6.32,3.09,2.29,1.62,1.27,7.29,9.12,12.57,11.07,10.47,10.63,10.73,11.08,12.60,12.30,11.08,11.76,13.04,13.75,13.07,12.33,11.60,10.58,9.17],
+    Tuesday:   [6.22,3.04,2.32,1.77,1.35,7.41,9.17,12.63,10.91,10.37,10.59,10.67,11.11,12.61,12.26,11.04,11.90,13.22,13.99,13.25,12.55,11.84,10.72,9.29],
+    Wednesday: [6.33,2.99,2.31,1.70,1.27,7.34,9.08,12.20,10.80,10.36,10.70,11.00,11.52,12.90,12.61,11.30,11.80,12.95,13.58,13.66,13.57,13.17,11.99,10.44],
+    Thursday:  [7.13,3.48,2.86,2.16,1.62,6.93,7.45,7.82,8.19,8.30,8.17,8.22,9.13,9.07,8.97,9.07,9.98,10.95,11.70,12.39,12.39,12.05,11.19,9.89],
+    Friday:    [6.53,3.14,2.48,1.91,1.46,7.38,7.91,8.25,8.89,9.26,9.60,9.80,9.80,9.96,9.72,9.94,11.22,12.52,13.03,12.86,12.31,11.77,10.68,9.32],
+    Saturday:  [6.22,3.04,2.25,1.56,1.24,7.29,9.25,12.91,11.19,10.49,10.70,10.83,11.19,12.71,12.74,11.18,11.64,13.04,13.66,12.92,12.08,11.51,10.47,9.12],
+  };
+  const dowColors = { Sunday: '#ef4444', Monday: '#f59e0b', Tuesday: '#38bdf8', Wednesday: '#f0abfc', Thursday: '#22c55e', Friday: '#6366f1', Saturday: '#ec4899' };
+
+  const cfg2 = {
+    series: Object.entries(dowData).map(([name, data]) => ({ name, data })),
+    chart: { type: 'line', height: 310, background: 'transparent', toolbar: { show: false }, zoom: { enabled: false }, fontFamily: "'DM Sans', sans-serif", animations: { enabled: true, easing: 'easeinout', speed: 800 } },
+    stroke: { curve: 'smooth', width: [2, 2, 2, 2, 2.5, 2.5, 2] },
+    colors: Object.values(dowColors),
+    markers: { size: 0, hover: { size: 4 } },
+    xaxis: { categories: hours, labels: { style: { colors: Array(24).fill('rgba(240,241,247,0.45)'), fontSize: '10px', fontFamily: "'DM Sans', sans-serif" }, rotate: 0 }, axisBorder: { show: false }, axisTicks: { show: false } },
+    yaxis: { min: 0, max: 15, tickAmount: 5, labels: { formatter: v => v.toFixed(0) + '%', style: { colors: ['rgba(240,241,247,0.45)'], fontSize: '11px', fontFamily: "'DM Sans', sans-serif" } } },
+    grid: { borderColor: 'rgba(255,255,255,0.06)', strokeDashArray: 4, xaxis: { lines: { show: false } }, padding: { top: 0, right: 16, bottom: 0, left: 10 } },
+    dataLabels: { enabled: false },
+    tooltip: { theme: 'dark', style: { fontSize: '12px', fontFamily: "'DM Sans', sans-serif" }, y: { formatter: v => v.toFixed(1) + '%' }, shared: true },
+    legend: { position: 'top', horizontalAlign: 'left', offsetY: 4, labels: { colors: 'rgba(240,241,247,0.7)' }, markers: { width: 10, height: 10, radius: 50, offsetX: -3 }, fontFamily: "'DM Sans', sans-serif", fontSize: '12px', itemMargin: { horizontal: 12 } },
+  };
+  window._chartConfigs['chart-dayofweek'] = cfg2;
+  new ApexCharts(document.getElementById('chart-dayofweek'), cfg2).render();
+
+  /* ────────────────────────────────────────────────
+     CHART 3 — Congestion Index WCI (bar)
+  ──────────────────────────────────────────────── */
+  const months      = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const monthlyVals = [14.56, 14.68, 12.73, 11.76, 13.31, 11.02, 10.51, 10.91, 14.46, 14.16, 14.34, 12.85];
+  const monthColors = monthlyVals.map((v, i) => {
+    if (i === 1)  return '#D42321';
+    if (i === 6)  return '#22c55e';
+    return '#38bdf8';
+  });
+
+  const cfg3 = {
+    series: [{ name: 'Avg. WCI Peak Hours', data: monthlyVals }],
+    chart: {
+      type: 'bar', height: 340,
+      background: 'transparent', toolbar: { show: false },
+      fontFamily: "'DM Sans', sans-serif",
+      animations: { enabled: true, easing: 'easeinout', speed: 800,
+        dynamicAnimation: { enabled: true, speed: 800 } },
+    },
+    plotOptions: {
+      bar: { borderRadius: 5, columnWidth: '62%', distributed: true, dataLabels: { position: 'top' } }
+    },
+    colors: monthColors,
+    dataLabels: {
+      enabled: true,
+      formatter: v => v.toFixed(1) + '%',
+      offsetY: -24,
+      style: {
+        fontSize: '11px', fontFamily: "'DM Sans', sans-serif", fontWeight: '700',
+        colors: monthlyVals.map((_, i) => i === 1 ? '#D42321' : i === 6 ? '#22c55e' : 'rgba(240,241,247,0.8)'),
+      },
+      background: { enabled: false },
+    },
+    xaxis: {
+      categories: months,
+      labels: { style: { colors: Array(12).fill('rgba(240,241,247,0.5)'), fontSize: '12px', fontFamily: "'DM Sans', sans-serif" } },
+      axisBorder: { show: false }, axisTicks: { show: false },
+    },
+    yaxis: {
+      min: 0, max: 17, tickAmount: 4,
+      labels: { formatter: v => v.toFixed(0) + '%', style: { colors: ['rgba(240,241,247,0.45)'], fontSize: '11px', fontFamily: "'DM Sans', sans-serif" } },
+    },
+    grid: {
+      borderColor: 'rgba(255,255,255,0.06)', strokeDashArray: 4,
+      xaxis: { lines: { show: false } },
+      padding: { top: 16, right: 10, bottom: 0, left: 10 },
+    },
+    tooltip: {
+      theme: 'dark', style: { fontSize: '12px', fontFamily: "'DM Sans', sans-serif" },
+      y: { formatter: v => v.toFixed(2) + '%', title: { formatter: () => 'WCI: ' } },
+    },
+    states: {
+      hover: { filter: { type: 'lighten', value: 0.1 } },
+      active: { filter: { type: 'none' } },
+    },
+    legend: { show: false },
+  };
+  window._chartConfigs['chart-monthly'] = cfg3;
+  const monthlyChart = new ApexCharts(document.getElementById('chart-monthly'), cfg3);
+  monthlyChart.render();
+
+  /* ────────────────────────────────────────────────
+     CHART 4 — Hours Wasted in Traffic 2015–2024
+  ──────────────────────────────────────────────── */
+  const wastedYears = [2015,2016,2017,2018,2019,2020,2021,2022,2023,2024];
+  const wastedHours = [102, 109, 108, 98, 92, 38, 22, 30, 37, 37];
+  const wastedColors = wastedHours.map((v, i) => {
+    if (i <= 3) return '#ef4444';
+    if (i === 4) return '#f97316';
+    return '#22c55e';
+  });
+
+  // Measure stats column height and match chart card to it
+  function renderWastedChart() {
+    const statsCol  = document.querySelector('.impact-stats');
+    const chartCard = document.querySelector('#chart-wasted').closest('.c-block-l');
+    const targetH   = statsCol ? statsCol.offsetHeight : 420;
+
+    // Apply matching height to the card wrapper
+    if (chartCard) {
+      chartCard.style.height = targetH + 'px';
+    }
+
+    const innerH = Math.max(targetH - 60, 260); // subtract header + footer
+
+    new ApexCharts(document.getElementById('chart-wasted'), {
+      series: [{ name: 'Hours Wasted', data: wastedHours }],
+      chart: {
+        type: 'bar', height: innerH,
+        background: 'transparent', toolbar: { show: false },
+        fontFamily: "'DM Sans', sans-serif",
+        animations: { enabled: true, easing: 'easeinout', speed: 900 },
+      },
+      plotOptions: { bar: { borderRadius: 5, columnWidth: '58%', distributed: true, dataLabels: { position: 'top' } } },
+      colors: wastedColors,
+      dataLabels: { enabled: true, formatter: v => v, offsetY: -20, style: { fontSize: '12px', fontFamily: "'DM Sans', sans-serif", fontWeight: '700', colors: ['rgba(15,18,33,0.8)'] }, background: { enabled: false } },
+      xaxis: { categories: wastedYears.map(String), labels: { style: { colors: Array(10).fill('#8b90a7'), fontSize: '12px', fontFamily: "'DM Sans', sans-serif" } }, axisBorder: { show: false }, axisTicks: { show: false } },
+      yaxis: { min: 0, max: 120, tickAmount: 4, labels: { formatter: v => v + ' h', style: { colors: ['#8b90a7'], fontSize: '11px', fontFamily: "'DM Sans', sans-serif" } }, title: { text: 'Hours / commuter / year', style: { color: '#8b90a7', fontSize: '11px', fontFamily: "'DM Sans', sans-serif" } } },
+      grid: { borderColor: 'rgba(15,18,33,0.07)', strokeDashArray: 4, xaxis: { lines: { show: false } }, padding: { top: 10, right: 10, bottom: 0, left: 10 } },
+      tooltip: { theme: 'light', style: { fontSize: '12px', fontFamily: "'DM Sans', sans-serif" }, y: { formatter: v => v + ' hrs', title: { formatter: () => 'Wasted: ' } } },
+      legend: { show: false },
+    }).render();
+  }
+
+  // Wait for DOM to paint so stats column has its final height
+  if (document.readyState === 'complete') {
+    requestAnimationFrame(() => requestAnimationFrame(renderWastedChart));
+  } else {
+    window.addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(renderWastedChart)));
+  }
+</script>
+</body>
+</html>
