@@ -1025,15 +1025,15 @@
     <p class="hero-desc">A comprehensive annual assessment of congestion, mobility behavior, and economic impact across Qatar — powered by the Wamd™ IoT Platform since 2014.</p>
     <div class="hero-stats-row">
       <div class="h-stat">
-        <div class="h-stat-val">10.5<sup>B</sup></div>
+        <div class="h-stat-val"><span class="count-up" data-target="10.5" data-suffix="B" data-decimals="1">10.5</span><sup>B</sup></div>
         <div class="h-stat-lbl">Raw data records<br/>collected in 2025</div>
       </div>
       <div class="h-stat">
-        <div class="h-stat-val">38<sup style="font-size:16px;color:var(--red);">h</sup></div>
+        <div class="h-stat-val"><span class="count-up" data-target="38" data-decimals="0">38</span><sup style="font-size:16px;color:var(--red);">h</sup></div>
         <div class="h-stat-lbl">Hours wasted<br/>per year</div>
       </div>
       <div class="h-stat">
-        <div class="h-stat-val">QR 3.8<sup>B</sup></div>
+        <div class="h-stat-val">QR <span class="count-up" data-target="3.8" data-decimals="1">3.8</span><sup>B</sup></div>
         <div class="h-stat-lbl">Total congestion<br/>cost in 2025</div>
       </div>
     </div>
@@ -1136,7 +1136,7 @@
       <div class="find-big reveal">
         <div class="find-big-badge">Hours wasted per year</div>
         <div>
-          <div class="find-big-num">38<span class="num-h">h</span></div>
+          <div class="find-big-num"><span class="count-up" data-target="38" data-decimals="0">38</span><span class="num-h">h</span></div>
           <p class="find-big-p">per commuter during weekdays due to congestion in 2025, slightly higher than 2024 (37h).</p>
         </div>
       </div>
@@ -1265,12 +1265,12 @@
       <div class="impact-stats">
         <div class="i-stat i-stat-plain reveal">
           <div class="i-lbl">Avg. Daily Distance</div>
-          <div class="i-val">35<small> km</small></div>
+          <div class="i-val"><span class="count-up" data-target="35" data-decimals="0">35</span><small> km</small></div>
           <div class="i-note">Average driven per commuter per day in 2024.</div>
         </div>
         <div class="i-stat i-stat-dark reveal">
           <div class="i-lbl">Annual Time Lost</div>
-          <div class="i-val">37<small> hrs</small></div>
+          <div class="i-val"><span class="count-up" data-target="37" data-decimals="0">37</span><small> hrs</small></div>
           <div class="i-note">Hours wasted per commuter per year during workdays.</div>
         </div>
         <div class="i-stat i-stat-red reveal">
@@ -1288,7 +1288,7 @@
         <p>Calculated using QMIC's internal model based on public records and assumptions, representing productivity loss from time wasted in traffic across the nation.</p>
       </div>
       <div class="cost-r">
-        <div class="cost-amount">QR 3.8B</div>
+        <div class="cost-amount">QR <span class="count-up" data-target="3.8" data-decimals="1">3.8</span>B</div>
         <div class="cost-currency">Qatari Riyal — 2024</div>
         <div class="cost-gdp-pill">≈ 0.52% of GDP at constant prices</div>
       </div>
@@ -1638,6 +1638,40 @@
   } else {
     window.addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(renderWastedChart)));
   }
+
+  /* ── Count-up on scroll ── */
+  (function() {
+    function run(el) {
+      if (el.dataset.counted) return;
+      el.dataset.counted = '1';
+      var target = parseFloat(el.dataset.target);
+      var dec    = parseInt(el.dataset.decimals || '0');
+      var dur    = 1400;
+      var t0     = null;
+      el.textContent = (0).toFixed(dec);
+      function frame(ts) {
+        if (!t0) t0 = ts;
+        var p = Math.min((ts - t0) / dur, 1);
+        var e = 1 - Math.pow(1 - p, 3);
+        el.textContent = (target * e).toFixed(dec);
+        if (p < 1) requestAnimationFrame(frame);
+        else el.textContent = target.toFixed(dec);
+      }
+      requestAnimationFrame(frame);
+    }
+    function check() {
+      var els = document.querySelectorAll('.count-up');
+      els.forEach(function(el) {
+        if (el.dataset.counted) return;
+        var r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight - 50 && r.bottom > 0) run(el);
+      });
+    }
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check, { passive: true });
+    window.addEventListener('load',   function() { setTimeout(check, 300); });
+    document.addEventListener('DOMContentLoaded', function() { setTimeout(check, 300); });
+  })();
 </script>
 </body>
 </html>
