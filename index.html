@@ -1025,15 +1025,15 @@
     <p class="hero-desc">A comprehensive annual assessment of congestion, mobility behavior, and economic impact across Qatar — powered by the Wamd™ IoT Platform since 2014.</p>
     <div class="hero-stats-row">
       <div class="h-stat">
-        <div class="h-stat-val">11.5<sup>B</sup></div>
+        <div class="h-stat-val"><span class="count-up" data-target="11.5" data-suffix="B" data-decimals="1">11.5</span><sup>B</sup></div>
         <div class="h-stat-lbl">Raw data records<br/>collected in 2024</div>
       </div>
       <div class="h-stat">
-        <div class="h-stat-val">37<sup style="font-size:16px;color:var(--red);">h</sup></div>
+        <div class="h-stat-val"><span class="count-up" data-target="37" data-decimals="0">37</span><sup style="font-size:16px;color:var(--red);">h</sup></div>
         <div class="h-stat-lbl">Hours wasted<br/>per year</div>
       </div>
       <div class="h-stat">
-        <div class="h-stat-val">QR 3.56<sup>B</sup></div>
+        <div class="h-stat-val">QR <span class="count-up" data-target="3.56" data-decimals="2">3.56</span><sup>B</sup></div>
         <div class="h-stat-lbl">Total congestion<br/>cost in 2024</div>
       </div>
     </div>
@@ -1136,7 +1136,7 @@
       <div class="find-big reveal">
         <div class="find-big-badge">Hours wasted per year</div>
         <div>
-          <div class="find-big-num">37<span class="num-h">h</span></div>
+          <div class="find-big-num"><span class="count-up" data-target="37" data-decimals="0">37</span><span class="num-h">h</span></div>
           <p class="find-big-p">per commuter during weekdays due to congestion — unchanged from 2023, reflecting stable but persistent traffic pressure.</p>
         </div>
       </div>
@@ -1265,17 +1265,17 @@
       <div class="impact-stats">
         <div class="i-stat i-stat-plain reveal">
           <div class="i-lbl">Avg. Daily Distance</div>
-          <div class="i-val">35<small> km</small></div>
+          <div class="i-val"><span class="count-up" data-target="35" data-decimals="0">35</span><small> km</small></div>
           <div class="i-note">Average driven per commuter per day in 2024.</div>
         </div>
         <div class="i-stat i-stat-dark reveal">
           <div class="i-lbl">Annual Time Lost</div>
-          <div class="i-val">37<small> hrs</small></div>
+          <div class="i-val"><span class="count-up" data-target="37" data-decimals="0">37</span><small> hrs</small></div>
           <div class="i-note">Hours wasted per commuter per year during workdays.</div>
         </div>
         <div class="i-stat i-stat-red reveal">
           <div class="i-lbl">Congestion Cost 2024</div>
-          <div class="i-val" style="font-size:34px;">QR 3.56<small>B</small></div>
+          <div class="i-val" style="font-size:34px;">QR <span class="count-up" data-target="3.56" data-decimals="2">3.56</span><small>B</small></div>
           <div class="i-note">Productivity loss only. ~0.50% of GDP at constant prices.</div>
         </div>
       </div>
@@ -1288,7 +1288,7 @@
         <p>Calculated using QMIC's internal model based on public records and assumptions, representing productivity loss from time wasted in traffic across the nation.</p>
       </div>
       <div class="cost-r">
-        <div class="cost-amount">QR 3.56B</div>
+        <div class="cost-amount">QR <span class="count-up" data-target="3.56" data-decimals="2">3.56</span>B</div>
         <div class="cost-currency">Qatari Riyal — 2024</div>
         <div class="cost-gdp-pill">≈ 0.50% of GDP at constant prices</div>
       </div>
@@ -1638,6 +1638,40 @@
   } else {
     window.addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(renderWastedChart)));
   }
+
+  /* ── Count-up on scroll ── */
+  (function() {
+    function run(el) {
+      if (el.dataset.counted) return;
+      el.dataset.counted = '1';
+      var target = parseFloat(el.dataset.target);
+      var dec    = parseInt(el.dataset.decimals || '0');
+      var dur    = 1400;
+      var t0     = null;
+      el.textContent = (0).toFixed(dec);
+      function frame(ts) {
+        if (!t0) t0 = ts;
+        var p = Math.min((ts - t0) / dur, 1);
+        var e = 1 - Math.pow(1 - p, 3);
+        el.textContent = (target * e).toFixed(dec);
+        if (p < 1) requestAnimationFrame(frame);
+        else el.textContent = target.toFixed(dec);
+      }
+      requestAnimationFrame(frame);
+    }
+    function check() {
+      var els = document.querySelectorAll('.count-up');
+      els.forEach(function(el) {
+        if (el.dataset.counted) return;
+        var r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight - 50 && r.bottom > 0) run(el);
+      });
+    }
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check, { passive: true });
+    window.addEventListener('load',   function() { setTimeout(check, 300); });
+    document.addEventListener('DOMContentLoaded', function() { setTimeout(check, 300); });
+  })();
 </script>
 </body>
 </html>
