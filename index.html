@@ -7,34 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/apexcharts">
-
-    var year = window.location.pathname.includes('qtr2025') ? '2025' : '2024';
-    var subject = encodeURIComponent('Full Qatar Traffic Report ' + year + ' Request - ' + org);
-    var body = encodeURIComponent(
-      'Name: ' + name + '\n' +
-      'Organization: ' + org + '\n' +
-      'Email: ' + email + '\n\n' +
-      'Message:\n' + (msg || 'No additional message.') + '\n\n' +
-      '---\nSent from Qatar Traffic Report ' + year + ' website.'
-    );
-
-    window.location.href = 'mailto:business@qmic.com.qa?subject=Interest%20in%20Qatar%20Traffic%20Report%202024&body=' + body;
-  }
-
-  /* ── Copy email ── */
-  function copyEmail() {
-    navigator.clipboard.writeText('business@qmic.com').then(function() {
-      var btn = document.getElementById('rf-copy-btn');
-      btn.classList.add('copied');
-      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 12 4 10"/></svg> Copied!';
-      setTimeout(function() {
-        btn.classList.remove('copied');
-        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy';
-      }, 2000);
-    });
-  }
-</script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  
   <style>
     /* ── TOKENS ── */
     :root {
@@ -1557,12 +1531,14 @@
           <div class="rf-divider">
             <span>or copy our email</span>
           </div>
-          <div class="rf-email-display">
-            <span id="rf-email-text">business@qmic.com</span>
-            <button class="rf-copy-btn" onclick="copyEmail()" id="rf-copy-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-              Copy
-            </button>
+                      <div class="rf-email-display">
+              <input id="rf-email-text" type="text" value="business@qmic.com" readonly
+                style="border:none;background:transparent;color:var(--d-text);font-family:var(--b);font-size:14px;flex:1;outline:none;cursor:default;"/>
+              <button id="rf-copy-btn" onclick="doCopy()"
+                style="background:var(--red);color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;">
+                Copy
+              </button>
+            </div>
           </div>
         </div>
       </div>
