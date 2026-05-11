@@ -7,7 +7,34 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts">
+
+    var year = window.location.pathname.includes('qtr2025') ? '2025' : '2024';
+    var subject = encodeURIComponent('Full Qatar Traffic Report ' + year + ' Request - ' + org);
+    var body = encodeURIComponent(
+      'Name: ' + name + '\n' +
+      'Organization: ' + org + '\n' +
+      'Email: ' + email + '\n\n' +
+      'Message:\n' + (msg || 'No additional message.') + '\n\n' +
+      '---\nSent from Qatar Traffic Report ' + year + ' website.'
+    );
+
+    window.location.href = 'mailto:business@qmic.com.qa?subject=Interest%20in%20Qatar%20Traffic%20Report%202024&body=' + body;
+  }
+
+  /* ── Copy email ── */
+  function copyEmail() {
+    navigator.clipboard.writeText('business@qmic.com').then(function() {
+      var btn = document.getElementById('rf-copy-btn');
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 12 4 10"/></svg> Copied!';
+      setTimeout(function() {
+        btn.classList.remove('copied');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy';
+      }, 2000);
+    });
+  }
+</script>
   <style>
     /* ── TOKENS ── */
     :root {
@@ -868,6 +895,197 @@
     .reveal-d2 { transition-delay: .1s; }
     .reveal-d3 { transition-delay: .18s; }
 
+
+    /* ── REQUEST SECTION ── */
+    .request-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .request-features {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .request-feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--b);
+      font-size: 14.5px;
+      font-weight: 400;
+      color: var(--d-sub);
+    }
+    .request-feature svg {
+      width: 18px; height: 18px;
+      stroke: var(--red);
+      flex-shrink: 0;
+    }
+    .request-card {
+      background: var(--d-card);
+      border: 1px solid var(--d-border);
+      border-radius: var(--r-xl);
+      padding: 36px 32px;
+    }
+    .request-card-title {
+      font-family: var(--h);
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--d-text);
+      margin-bottom: 8px;
+    }
+    .request-card-sub {
+      font-family: var(--b);
+      font-size: 14px;
+      color: var(--d-muted);
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+    .request-form { display: flex; flex-direction: column; gap: 14px; }
+    .rf-group { display: flex; flex-direction: column; gap: 6px; }
+    .rf-label {
+      font-family: var(--b);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--d-muted);
+    }
+    .rf-input {
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--d-border);
+      border-radius: var(--r-sm);
+      color: var(--d-text);
+      font-family: var(--b);
+      font-size: 14.5px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color .2s;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .rf-input::placeholder { color: var(--d-muted); }
+    .rf-input:focus { border-color: var(--red); }
+    .rf-textarea { min-height: 90px; resize: vertical; }
+    .rf-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 13px 28px;
+      font-family: var(--h);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s, box-shadow .2s;
+      box-shadow: 0 4px 16px rgba(212,35,33,.3);
+      width: 100%;
+    }
+    .rf-btn svg { width: 16px; height: 16px; }
+    .rf-btn:hover { background: var(--red-hover); box-shadow: 0 4px 24px rgba(212,35,33,.45); }
+    .rf-note {
+      font-family: var(--b);
+      font-size: 13px;
+      color: var(--d-muted);
+      text-align: center;
+      margin: 0;
+    }
+    .rf-link { color: var(--red); text-decoration: none; }
+    .rf-link:hover { text-decoration: underline; }
+    .rf-success {
+      background: rgba(34,197,94,.1);
+      border: 1px solid rgba(34,197,94,.3);
+      border-radius: var(--r-md);
+      padding: 16px 20px;
+      text-align: center;
+      font-family: var(--b);
+      font-size: 14px;
+      color: #22c55e;
+      display: none;
+    }
+    @media (max-width: 1024px) {
+      .request-wrap { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+
+    /* ── REQUEST SECTION ── */
+    .request-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .request-features { display: flex; flex-direction: column; gap: 14px; }
+    .request-feature {
+      display: flex; align-items: center; gap: 12px;
+      font-family: var(--b); font-size: 14.5px; font-weight: 400;
+      color: var(--d-sub);
+    }
+    .request-feature svg { width: 18px; height: 18px; stroke: var(--red); flex-shrink: 0; }
+    .request-card {
+      background: var(--d-card);
+      border: 1px solid var(--d-border);
+      border-radius: var(--r-xl);
+      padding: 40px 36px;
+    }
+    .request-card-title {
+      font-family: var(--h); font-weight: 700; font-size: 20px;
+      color: var(--d-text); margin-bottom: 10px;
+    }
+    .request-card-sub {
+      font-family: var(--b); font-size: 14px; color: var(--d-muted);
+      margin-bottom: 28px; line-height: 1.75;
+    }
+    .rf-mailto-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: var(--red); color: #fff;
+      border-radius: 50px; padding: 14px 28px;
+      font-family: var(--h); font-size: 15px; font-weight: 600;
+      text-decoration: none;
+      transition: background .2s, box-shadow .2s;
+      box-shadow: 0 4px 16px rgba(212,35,33,.3);
+    }
+    .rf-mailto-btn svg { width: 18px; height: 18px; }
+    .rf-mailto-btn:hover { background: var(--red-hover); box-shadow: 0 4px 24px rgba(212,35,33,.45); }
+    .rf-divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 22px 0;
+      color: var(--d-muted); font-family: var(--b); font-size: 13px;
+    }
+    .rf-divider::before, .rf-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--d-border);
+    }
+    .rf-email-display {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--d-border);
+      border-radius: var(--r-md);
+      padding: 12px 16px;
+    }
+    #rf-email-text {
+      font-family: var(--b); font-size: 14.5px;
+      color: var(--d-text); letter-spacing: .01em;
+    }
+    .rf-copy-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(212,35,33,.12);
+      border: 1px solid var(--red-border);
+      border-radius: var(--r-sm);
+      color: #ff9998; cursor: pointer;
+      font-family: var(--b); font-size: 12.5px; font-weight: 500;
+      padding: 6px 12px;
+      transition: background .2s;
+    }
+    .rf-copy-btn svg { width: 13px; height: 13px; }
+    .rf-copy-btn:hover { background: rgba(212,35,33,.22); }
+    .rf-copy-btn.copied { background: rgba(34,197,94,.15); border-color: rgba(34,197,94,.3); color: #22c55e; }
+    @media (max-width: 1024px) { .request-wrap { grid-template-columns: 1fr; gap: 40px; } }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 1024px) {
       nav { padding: 0; }
@@ -968,6 +1186,7 @@
       <li><a href="#findings">Findings</a></li>
       <li><a href="#patterns">Patterns</a></li>
       <li><a href="#impact">Impact</a></li>
+      <li><a href="#request">Get Report</a></li>
     </ul>
     <div class="nav-links-right">
       <div class="year-switcher">
@@ -990,6 +1209,7 @@
   <a href="#findings" onclick="closeDrawer()">Findings</a>
   <a href="#patterns" onclick="closeDrawer()">Patterns</a>
   <a href="#impact" onclick="closeDrawer()">Impact</a>
+  <a href="#request" onclick="closeDrawer()">Get Report</a>
   <div style="padding: 14px 0 4px; border-top: 1px solid var(--l-border); margin-top: 4px;">
     <div style="font-family:var(--b);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--l-muted);margin-bottom:10px;">Report Year</div>
     <div class="year-switcher" style="width:fit-content;">
@@ -1064,7 +1284,7 @@
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
         </div>
         <h3>Wamd™ IoT Platform</h3>
-        <p>The most updated navigable GIS data in Qatar — a live, continuously enriched view of the national road network.</p>
+        <p>The most updated navigable GIS data in Qatar, collected through a multi-source traffic sensing network providing a live, continuously enriched view of the national road network.</p>
         <p>Approximately <strong style="font-weight:600;color:var(--l-text);">11.5 billion raw records</strong> were collected in 2024 from QMIC's comprehensive IoT data collection network.</p>
       </div>
       <div class="f-card reveal reveal-d3">
@@ -1296,6 +1516,60 @@
   </div>
 </section>
 
+
+
+
+<!-- REQUEST FULL REPORT -->
+<section id="request" class="sec" style="background:var(--d-bg);border-bottom:none;">
+  <div class="inner">
+    <div class="request-wrap">
+      <div class="request-left">
+        <div class="sec-pill sec-pill-d" style="margin-bottom:20px;">Full Report Available</div>
+        <h2 class="sec-h sec-h-d" style="margin-bottom:16px;">Get the Complete<br/><span>Data Report</span></h2>
+        <p class="sec-p sec-p-d" style="margin-bottom:28px;">Interested in the insights behind Qatar's traffic data? Reach out and let's start a conversation. We will connect with you to understand your needs and explore how our data can support your work.</p>
+        <div class="request-features">
+          <div class="request-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            Brief consultation to understand your requirements
+          </div>
+          <div class="request-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Flexible scheduling based on your availability
+          </div>
+          <div class="request-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            Tailored discussions for your organization or research goals
+          </div>
+          <div class="request-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Access to extended insights and supporting data
+          </div>
+        </div>
+      </div>
+      <div class="request-right">
+        <div class="request-card">
+          <h3 class="request-card-title">Get in Touch</h3>
+          <p class="request-card-sub">Click the button below to open your email with a pre-filled message. We will reach out to schedule a call and explore how this data can benefit you.</p>
+          <a class="rf-mailto-btn" target="_blank" href="mailto:business@qmic.com?subject=Interest%20in%20Qatar%20Traffic%20Report%202024&body=Dear%20QMIC%20Team%2C%0A%0AI%20came%20across%20the%20Qatar%20Traffic%20Report%202024%20and%20I%20am%20interested%20in%20learning%20more%20about%20the%20report%20and%20the%20insights%20behind%20the%20data.%0A%0AContact%20Details%3A%0AName%3A%20%0AOrganization%3A%20%0APreferred%20Contact%20Time%3A%20%0A%0ALooking%20forward%20to%20hearing%20from%20you.%0A%0ABest%20regards%2C">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Request Access
+          </a>
+          <div class="rf-divider">
+            <span>or copy our email</span>
+          </div>
+          <div class="rf-email-display">
+            <span id="rf-email-text">business@qmic.com</span>
+            <button class="rf-copy-btn" onclick="copyEmail()" id="rf-copy-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="foot-inner">
@@ -1314,6 +1588,7 @@
       <li><a href="#findings">Findings</a></li>
       <li><a href="#patterns">Patterns</a></li>
       <li><a href="#impact">Impact</a></li>
+      <li><a href="#request">Get Report</a></li>
     </ul>
     <span class="foot-copy">Qatar Traffic Report 2024</span>
   </div>
