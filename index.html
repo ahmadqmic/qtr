@@ -1923,6 +1923,36 @@
     window.addEventListener('load',   function() { setTimeout(check, 300); });
     document.addEventListener('DOMContentLoaded', function() { setTimeout(check, 300); });
   })();
+
+  /* ── Copy email ── */
+  function doCopy() {
+    var input = document.getElementById('rf-email-text');
+    var btn   = document.getElementById('rf-copy-btn');
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(input.value).then(function() {
+        showCopied(btn, 'Copied!');
+      }).catch(function() { fallbackCopy(input, btn); });
+    } else {
+      fallbackCopy(input, btn);
+    }
+  }
+  function fallbackCopy(input, btn) {
+    input.select();
+    input.setSelectionRange(0, 99999);
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e) {}
+    showCopied(btn, ok ? 'Copied!' : 'Ctrl+C to copy');
+  }
+  function showCopied(btn, msg) {
+    btn.textContent = msg;
+    btn.style.background = '#22c55e';
+    btn.style.borderColor = '#22c55e';
+    setTimeout(function() {
+      btn.textContent = 'Copy';
+      btn.style.background = 'var(--red)';
+      btn.style.borderColor = '';
+    }, 2500);
+  }
 </script>
 </body>
 </html>
