@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Request Access — Qatar Traffic Report</title>
+  <meta name="description" content="Request access to the Qatar Traffic Report." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/qatar-traffic-report.css" />
+</head>
+<body class="qtr-request-page qtr-request-form-page">
+  <main class="qtr-request-shell">
+    <section class="qtr-request-card">
+      <div class="qtr-request-info">
+        <div class="qtr-request-pill">Report Access</div>
+        <h1>Request the <span>Qatar Traffic Report.</span></h1>
+        <p>Submit your details and confirm the Report Access and Usage Agreement. After submission, the Qatar Traffic Report and a copy of the accepted agreement will be sent to the work email address registered in the form.</p>
+        <div class="qtr-request-benefits">
+          <div><span>01</span><strong>Official work details only</strong><small>Please use your organization email address. Personal and disposable email domains are not accepted.</small></div>
+          <div><span>02</span><strong>Agreement confirmation</strong><small>You must review and accept the usage agreement before submitting the request.</small></div>
+          <div><span>03</span><strong>Email-based delivery</strong><small>The report and accepted agreement will be sent to the registered work email address.</small></div>
+        </div>
+      </div>
+
+      <div class="qtr-request-form-wrap">
+        <div class="qtr-request-form-header">
+          <img class="qtr-request-logo" src="../images/qmic-logo.svg" alt="QMIC logo" />
+        </div>
+        <div class="qtr-request-form-body">
+          <h2>Submit report request</h2>
+          <p class="qtr-request-form-note">All fields are required. Please use your official organization email address.</p>
+          <div class="qtr-request-global-error" id="globalError"></div>
+          <form id="requestForm" action="https://api.web3forms.com/submit" method="POST" novalidate>
+            <input type="hidden" name="access_key" value="1b2ba46c-eeff-48ce-ac63-16761f4490c6" />
+            <input type="hidden" name="subject" value="Qatar Traffic Report Access Request" />
+            <input type="hidden" name="from_name" value="Qatar Traffic Report Request Form" />
+            <input type="hidden" name="redirect" id="nextUrl" value="" />
+            <input type="hidden" name="Client Submitted Information" value="The following information was submitted by the client through the Qatar Traffic Report request form." />
+
+            <div class="qtr-request-form-group">
+              <label for="name">User's name</label>
+              <input id="name" name="User name" type="text" autocomplete="name" required />
+              <div class="qtr-request-field-error" id="nameError"></div>
+            </div>
+
+            <div class="qtr-request-form-group">
+              <label for="organization">Organization / Entity</label>
+              <input id="organization" name="Organization" type="text" autocomplete="organization" required />
+              <div class="qtr-request-field-error" id="organizationError"></div>
+            </div>
+
+            <div class="qtr-request-form-group">
+              <label for="email">Work email address</label>
+              <input id="email" name="Work email address" type="email" autocomplete="email" inputmode="email" required />
+              <div class="qtr-request-field-error" id="emailError"></div>
+            </div>
+
+            <div class="qtr-request-terms-group">
+              <label class="qtr-request-terms-label" for="terms">
+                <input id="terms" name="Terms and conditions" type="checkbox" value="Accepted" required />
+                <span>I have read and accept the <a href="terms-and-conditions.html" target="_blank" rel="noopener">Report Access and Usage Agreement</a>.</span>
+              </label>
+              <div class="qtr-request-field-error" id="termsError"></div>
+            </div>
+
+            <input type="hidden" name="Date and time" id="submittedAt" value="" />
+            <button class="qtr-request-btn qtr-request-btn-primary qtr-request-submit" type="submit">Submit Request</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="../assets/js/qatar-traffic-report.js"></script>
+</body>
+</html>

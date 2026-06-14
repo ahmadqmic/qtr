@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qatar Traffic Report 2025 — QMIC</title>
+  <meta name="description" content="Annual traffic congestion analysis for Qatar 2025." />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PTQ59STC9E"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PTQ59STC9E');
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/qatar-traffic-report.css" />
+  <link rel="stylesheet" href="assets/css/rtl.css" />
+
+</head>
+<body>
+
+<!-- Year transition overlay -->
+<!-- Year transition overlay -->
+<div id="yearOverlay">
+  <svg class="yo-logo" viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg">
+    <path d="M187.194353,0 C187.194353,0 187.962353,18.149 170.901353,20.55 L170.901353,0 L187.194353,0 Z" fill="#99BB1F"/>
+    <path d="M67.0654527,103.0996 L49.4924527,103.0996 L49.4924527,46.7646 C49.4924527,44.5566 49.0764527,42.5076 48.2124527,40.5556 C47.3794527,38.6026 46.2284527,36.9376 44.7874527,35.4976 C43.3474527,34.0576 41.6504527,32.9366 39.7304527,32.0726 C37.8094527,31.2406 35.7294527,30.7926 33.5204527,30.7926 C31.3114527,30.7926 29.2634527,31.2086 27.3104527,32.0086 C25.3574527,32.8086 23.6934527,33.9296 22.2534527,35.3696 C20.8134527,36.8096 19.6924527,38.4746 18.8284527,40.3626 C17.9644527,42.2516 17.5474527,44.2996 17.5474527,46.5086 C17.5474527,48.7176 17.9644527,50.7656 18.7644527,52.7186 C19.5644527,54.6706 20.6854527,56.3346 22.1254527,57.7756 C23.5654527,59.2156 25.2304527,60.3356 27.1184527,61.2006 C29.0074527,62.0336 31.0554527,62.4496 33.2644527,62.4496 C37.0734527,62.4496 40.2744527,61.3926 42.8664527,59.2806 L42.8664527,78.8696 C39.6664527,79.7976 36.3694527,80.2456 33.0084527,80.2456 C28.4624527,80.2456 24.1414527,79.3496 20.1084527,77.5886 C16.0754527,75.8286 12.5544527,73.3956 9.54545271,70.3236 C6.56845271,67.2496 4.20045271,63.6646 2.47145271,59.5686 C0.74345271,55.4706 -0.08854729,51.1176 0.00745271002,46.4766 C0.00745271002,41.8356 0.90345271,37.5146 2.66445271,33.4496 C4.42445271,29.4156 6.82545271,25.8626 9.86545271,22.8226 C12.9064527,19.7816 16.4274527,17.4126 20.4924527,15.6836 C24.5254527,13.9556 28.8784527,13.0916 33.5204527,13.0916 C38.1614527,13.0916 42.5144527,13.9876 46.6114527,15.7476 C50.7094527,17.5086 54.2624527,19.9096 57.3024527,22.9506 C60.3434527,25.9916 62.7124527,29.5436 64.4404527,33.6416 C66.1694527,37.7386 67.0334527,42.0916 67.0334527,46.7326 L67.0334527,103.0996 L67.0654527,103.0996 Z" fill="#D42321"/>
+    <path d="M168.724653,43.0835 C168.724653,43.5955 168.756653,44.1405 168.788653,44.7165 C168.821653,45.2925 168.853653,45.9005 168.853653,46.4765 L168.853653,80.2465 L151.024653,80.2465 L151.024653,46.8605 C151.024653,44.7485 150.736653,42.7315 150.192653,40.7795 C149.647653,38.8265 148.847653,37.1295 147.790653,35.6575 C146.735653,34.1855 145.454653,33.0335 143.917653,32.1685 C142.381653,31.3365 140.685653,30.8885 138.733653,30.8885 C135.276653,30.8885 132.586653,32.3285 130.634653,35.1775 C128.682653,38.0585 127.689653,41.8035 127.593653,46.4445 L127.593653,80.2135 L110.020653,80.2135 L110.020653,46.8605 C110.020653,42.0595 109.060653,38.1865 107.108653,35.2735 C105.155653,32.3605 102.434653,30.9205 98.8826527,30.9205 C97.0256527,30.9205 95.3286527,31.3365 93.8246527,32.2005 C92.3206527,33.0335 91.0076527,34.1855 89.9196527,35.6255 C88.8316527,37.0655 87.9676527,38.7625 87.3916527,40.6835 C86.8146527,42.6355 86.4946527,44.6525 86.4946527,46.7645 L86.4946527,80.2775 L69.0496527,80.2775 L69.0496527,46.4765 C69.0496527,41.8355 69.7866527,37.5145 71.2586527,33.4495 C72.7306527,29.4165 74.8116527,25.8625 77.4686527,22.8225 C80.1246527,19.7815 83.3256527,17.4125 87.0706527,15.6845 C90.8156527,13.9555 94.9766527,13.0915 99.5226527,13.0915 C103.075653,13.0915 106.468653,13.9235 109.701653,15.5565 C112.933653,17.1885 115.974653,19.1095 118.759653,21.3175 C121.448653,19.1415 124.392653,17.2205 127.625653,15.5565 C130.827653,13.9235 134.379653,13.0915 138.252653,13.0915 C142.541653,13.0915 146.479653,13.8595 150.064653,15.3645 C153.649653,16.8685 156.753653,18.9805 159.346653,21.7015 C161.971653,24.3905 164.051653,27.5915 165.684653,31.2405 C167.316653,34.9215 168.308653,38.8585 168.724653,43.0835" fill="#D42321"/>
+    <path d="M223.332053,30.7925 C221.123053,30.7925 219.075053,31.2085 217.122053,32.0725 C215.170053,32.9045 213.505053,34.0575 212.064053,35.4975 C210.624053,36.9385 209.504053,38.6025 208.704053,40.5555 C207.903053,42.5075 207.487053,44.5565 207.487053,46.7645 C207.487053,48.9735 207.903053,51.0215 208.736053,52.9745 C209.568053,54.9265 210.721053,56.5915 212.161053,58.0325 C213.602053,59.4715 215.266053,60.5925 217.154053,61.3925 C219.043053,62.1935 221.091053,62.6095 223.300053,62.6095 L239.240053,62.6095 L239.240053,80.3095 L223.300053,80.3095 C218.658053,80.3095 214.306053,79.4455 210.272053,77.7165 C206.207053,75.9885 202.686053,73.6205 199.645053,70.5795 C196.604053,67.5385 194.204053,63.9855 192.443053,59.8885 C190.683053,55.7915 189.787053,51.4385 189.787053,46.7965 C189.787053,42.1555 190.651053,37.8025 192.380053,33.7055 C194.108053,29.6075 196.477053,26.0555 199.518053,23.0145 C202.559053,19.9735 206.111053,17.5725 210.208053,15.8125 C214.306053,14.0515 218.658053,13.1555 223.300053,13.1555 L239.240053,13.1555 L239.240053,30.8565 L223.332053,30.8565 L223.332053,30.7925 Z" fill="#D42321"/>
+    <path d="M187.961953,7.7783 L187.961953,80.2463 L170.900953,80.2463 L170.900953,24.1343 C179.768953,23.5263 186.905953,16.6123 187.961953,7.7783" fill="#D42321"/>
+  </svg>
+  <div class="yo-gauge-wrap">
+    <svg class="yo-gauge" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <!-- Track ring -->
+      <circle cx="60" cy="60" r="48" fill="none" stroke="#e8eaf0" stroke-width="5"/>
+      <!-- Animated fill arc -->
+      <circle cx="60" cy="60" r="48" fill="none" stroke="#D42321" stroke-width="5"
+        stroke-linecap="round"
+        stroke-dasharray="301.6"
+        stroke-dashoffset="301.6"
+        transform="rotate(-90 60 60)"
+        class="yo-arc"/>
+      <!-- Tick marks -->
+      <line x1="60" y1="8"  x2="60" y2="18" stroke="#D42321" stroke-width="3" stroke-linecap="round" transform="rotate(-60 60 60)"/>
+      <line x1="60" y1="8"  x2="60" y2="18" stroke="#D42321" stroke-width="3" stroke-linecap="round"/>
+      <line x1="60" y1="8"  x2="60" y2="18" stroke="#D42321" stroke-width="3" stroke-linecap="round" transform="rotate(60 60 60)"/>
+
+    </svg>
+    <span class="yo-year-label" id="yoYearLabel"></span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#top" class="nav-brand" aria-label="Back to top">
+      <img src="images/qmic-logo.svg" alt="QMIC" class="nav-logo-svg" />
+
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#foundation">Foundation</a></li>
+      <li><a href="#use-cases">Use Cases</a></li>
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#patterns">Patterns</a></li>
+      <li><a href="#impact">Impact</a></li>
+      <li><a href="#request">Get Report</a></li>
+    </ul>
+
+    <div class="nav-links-right">
+      <!-- Year Switcher -->
+      <div class="year-switcher">
+        <button class="year-btn " onclick="switchYear(2024)">2024</button>
+        <button class="year-btn active" onclick="switchYear(2025)">2025</button>
+      </div>
+      <!-- Hamburger -->
+      <button id="navHamburger" aria-label="Open menu" style="display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;background:none;border:none;outline:none;margin-left:12px;">
+        <span style="display:block;width:22px;height:2px;background:#0f1221;border-radius:2px;"></span>
+        <span style="display:block;width:22px;height:2px;background:#0f1221;border-radius:2px;"></span>
+        <span style="display:block;width:22px;height:2px;background:#0f1221;border-radius:2px;"></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Drawer -->
+<div class="nav-drawer" id="navDrawer">
+  <a href="#foundation" onclick="closeDrawer()">Foundation</a>
+  <a href="#use-cases"  onclick="closeDrawer()">Use Cases</a>
+  <a href="#findings"   onclick="closeDrawer()">Findings</a>
+  <a href="#patterns"   onclick="closeDrawer()">Patterns</a>
+  <a href="#impact"     onclick="closeDrawer()">Impact</a>
+  <a href="#request"    onclick="closeDrawer()">Get Report</a>
+</div>
+
+
+<!-- Fullscreen chart modal -->
+<div class="fs-overlay" id="fsOverlay" onclick="handleOverlayClick(event)">
+  <div class="fs-modal">
+    <div class="fs-modal-head" id="fsModalHead">
+      <h3 id="fsTitle"></h3>
+      <div style="display:flex;align-items:center;gap:12px;margin-left:auto;">
+        <div id="fsPeaksSlot" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+        <button class="fs-close" onclick="closeFullscreen()">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="fs-modal-body" id="fsBody"></div>
+  </div>
+</div>
+<section id="top" class="hero">
+  <div class="hero-bg-img"></div>
+  <div class="hero-inner">
+    <div class="hero-pill">
+      <span class="hero-pill-dot"></span>
+      Qatar Mobility Innovations Center
+    </div>
+    <h1 class="hero-h1">Qatar Traffic<br/><span>Report 2025</span></h1>
+    <p class="hero-desc">A comprehensive annual assessment of congestion, mobility behavior, and economic impact across Qatar — powered by the Wamd™ IoT Platform since 2014.</p>
+    <div class="hero-stats-row">
+      <div class="h-stat">
+        <div class="h-stat-val"><span class="count-up" data-target="10.5" data-suffix="B" data-decimals="1">10.5</span><sup>B</sup></div>
+        <div class="h-stat-lbl">Raw data records<br/>collected in 2025</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-val"><span class="count-up" data-target="39" data-decimals="0">39</span><sup style="font-size:16px;color:var(--red);">h</sup></div>
+        <div class="h-stat-lbl">Hours wasted<br/>per year</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-val">QR <span class="count-up" data-target="3.8" data-decimals="1">3.8</span><sup>B</sup></div>
+        <div class="h-stat-lbl">Total congestion<br/>cost in 2025</div>
+      </div>
+    </div>
+  </div>
+  <svg class="hero-wave" viewBox="0 0 1440 110" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,45 C200,5 550,5 760,55 C970,105 1220,105 1440,45 L1440,110 L0,110 Z" fill="#f7f8fc"/>
+  </svg>
+</section>
+
+<!-- 01 FOUNDATION — light alt -->
+<section id="foundation" class="sec sec-la">
+  <div class="inner">
+    <div class="sec-pill sec-pill-l">01 — Report Foundation</div>
+    <h2 class="sec-h sec-h-l">Platform &amp; <span>Methodology</span></h2>
+    <p class="sec-p sec-p-l">QMIC holds the only comprehensive traffic data bank in Qatar since 2014, enabling continuous monitoring and knowledge-based assessment of national mobility.</p>
+
+    <div class="f-grid">
+      <div class="f-card reveal">
+        <div class="f-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>Strategic Importance</h3>
+        <p>QMIC developed and deployed a comprehensive data platform to support intelligent transport in Qatar, with the only complete traffic data bank in the country.</p>
+        <p>Continuous monitoring and knowledge-based assessment are vital for sustainable national mobility planning. First report published in 2016.</p>
+      </div>
+      <div class="f-card reveal reveal-d2">
+        <div class="f-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        </div>
+        <h3>Wamd™ IoT Platform</h3>
+        <p>The most updated navigable GIS data in Qatar, collected through a multi-source traffic sensing network providing a live, continuously enriched view of the national road network.</p>
+        <p>Approximately <strong style="font-weight:600;color:var(--l-text);">10.5 billion raw records</strong> were collected in 2025 from QMIC's comprehensive IoT data collection network.</p>
+      </div>
+      <div class="f-card reveal reveal-d3">
+        <div class="f-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Wamd Congestion Index</h3>
+        <p>The WCI ranges from 0–100%, indicating the average speed reduction compared to free-flow speed on any given road segment. WCI is used to determine the:</p>
+        <ul>
+          <li>Most congested segments, streets, districts &amp; zones</li>
+          <li>Wasted hours per year per commuter</li>
+          <li>Total annual congestion cost estimate</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 USE CASES — dark -->
+<section id="use-cases" class="sec sec-d">
+  <div class="inner">
+    <div class="sec-pill sec-pill-d">02 — Use Cases</div>
+    <h2 class="sec-h sec-h-d">How This Data<br/><span>Creates Impact</span></h2>
+    <p class="sec-p sec-p-d">Enabling transport planners, policymakers, and researchers to make evidence-based decisions about Qatar's road network and mobility future.</p>
+
+    <div class="uc-list">
+      <div class="uc-item reveal">
+        <span class="uc-num">01</span>
+        <div class="uc-divider"></div>
+        <span class="uc-text">Assess the impact of road and infrastructure projects on congestion levels across Qatar.</span>
+        <div class="uc-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="uc-item reveal">
+        <span class="uc-num">02</span>
+        <div class="uc-divider"></div>
+        <span class="uc-text">Monitor and identify changes in congestion levels and traffic patterns over time.</span>
+        <div class="uc-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="uc-item reveal">
+        <span class="uc-num">03</span>
+        <div class="uc-divider"></div>
+        <span class="uc-text">Identify congestion hotspots at specified times of day, days of the week, and seasons.</span>
+        <div class="uc-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="uc-item reveal">
+        <span class="uc-num">04</span>
+        <div class="uc-divider"></div>
+        <span class="uc-text">Estimate the economic impact of road congestion on national productivity and GDP.</span>
+        <div class="uc-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="uc-item reveal">
+        <span class="uc-num">05</span>
+        <div class="uc-divider"></div>
+        <span class="uc-text">Assess the impact of mega-events such as FIFA Qatar World Cup 2022 on mobility and congestion behavior.</span>
+        <div class="uc-arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 FINDINGS — light -->
+<section id="findings" class="sec sec-l">
+  <div class="inner">
+    <div class="sec-pill sec-pill-l">03 — Key Findings <span style="color:var(--red);">In</span> 2025</div>
+    <h2 class="sec-h sec-h-l">What the Data<br/><span>Reveals</span></h2>
+    <p class="sec-p sec-p-l">Three major factors shaped congestion and mobility in 2024 — post-World Cup legacy, completion of major road projects, and evolving commuter patterns.</p>
+
+    <div class="findings-layout">
+      <div class="find-big reveal">
+        <div class="find-big-badge">Hours wasted per year</div>
+        <div>
+          <div class="find-big-num"><span class="count-up" data-target="38" data-decimals="0">38</span><span class="num-h">h</span></div>
+          <p class="find-big-p">per commuter during weekdays due to congestion in 2025, slightly higher than 2024 (37h).</p>
+        </div>
+      </div>
+      <div class="find-cards-col">
+        <div class="find-card reveal">
+          <div class="find-card-tag">Most Congested Month</div>
+          <div class="find-month red">February</div>
+          <p>February recorded the highest congestion index of 2024, driven by peak population activity and cooler weather increasing road usage.</p>
+        </div>
+        <div class="find-card reveal">
+          <div class="find-card-tag">Least Congested Month</div>
+          <div class="find-month grey">July</div>
+          <p>July saw the lowest congestion levels, reflecting seasonal patterns as residents travel abroad during summer months.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-cards">
+      <div class="insight-card reveal">
+        <div class="insight-card-body">
+          <p>The level of congestion is <strong>almost stable in the last 3 years</strong>: 2023, 2024, and 2025 — reflecting a sustained post-World Cup equilibrium in Qatar's traffic patterns.</p>
+        </div>
+        <div class="insight-card-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+      </div>
+      <div class="insight-card reveal reveal-d2">
+        <div class="insight-card-body">
+          <p><strong>Feb 27th was the most congested day</strong> in Qatar in 2025, while <strong>July 25th was the least congested</strong> — the widest single-day contrast recorded in the year.</p>
+        </div>
+        <div class="insight-card-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 PATTERNS — dark -->
+<section id="patterns" class="sec sec-d">
+  <div class="inner">
+    <div class="sec-pill sec-pill-d">04 — Congestion Patterns</div>
+    <h2 class="sec-h sec-h-d">Daily &amp; Weekly<br/><span>Trends</span></h2>
+    <p class="sec-p sec-p-d">Congestion follows predictable daily rhythms with three distinct peak windows, and clear variation across the days of the week.</p>
+
+    <div class="chart-grid-1">
+      <div class="c-block reveal">
+        <div class="c-head">
+          <h3>Wamd Congestion Index — Workdays</h3>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div class="peaks">
+              <span class="peak-pill">Morning 7–8 AM</span>
+              <span class="peak-pill">Midday 2–3 PM</span>
+              <span class="peak-pill">Evening 5–6 PM</span>
+            </div>
+            <button class="fs-btn" onclick="openFullscreen('chart-workdays','Wamd Congestion Index — Workdays')">
+              <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3"/></svg>
+              Full Screen
+            </button>
+          </div>
+        </div>
+        <div id="chart-workdays" style="padding: 8px 8px 0;"></div>
+        <div class="c-foot">
+          <span class="c-tag">Three daily peaks on workdays</span>
+          <span class="c-tag c-tag-purple">Morning Peak: 7–8 AM · 11.7%</span>
+          <span class="c-tag c-tag-purple">Midday Peak: 2–3 PM · 13.3%</span>
+          <span class="c-tag c-tag-purple">Evening Peak: 5–6 PM · 13.0%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-grid-2">
+      <div class="c-block reveal">
+        <div class="c-head">
+          <h3>Index by Day of Week</h3>
+          <button class="fs-btn" onclick="openFullscreen('chart-dayofweek','Congestion Index by Day of Week')">
+            <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3"/></svg>
+            Full Screen
+          </button>
+        </div>
+        <div id="chart-dayofweek" style="padding: 8px 8px 0;"></div>
+        <div class="c-foot">
+          <span class="c-tag">Sun–Wed very similar trends</span>
+          <span class="c-tag">Thu slightly different</span>
+          <span class="c-tag">Fri–Sat distinct vs. workdays</span>
+        </div>
+      </div>
+      <div class="c-block reveal reveal-d2">
+        <div class="c-head">
+          <h3>Congestion Index WCI</h3>
+          <button class="fs-btn" onclick="openFullscreen('chart-monthly','Congestion Index WCI')">
+            <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3"/></svg>
+            Full Screen
+          </button>
+        </div>
+        <div id="chart-monthly" style="padding: 8px 8px 0;"></div>
+        <div class="c-foot">
+          <span class="c-tag">February most congested · 14.7%</span>
+          <span class="c-tag c-tag-green">July least congested · 10.5%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 IMPACT — light alt -->
+<section id="impact" class="sec sec-la">
+  <div class="inner">
+    <div class="sec-pill sec-pill-l">05 — Impact of Congestion</div>
+    <h2 class="sec-h sec-h-l">Time &amp; <span>Economic Cost</span></h2>
+    <p class="sec-p sec-p-l">Beyond daily inconvenience, traffic congestion carries measurable economic costs. QMIC's model quantifies both the time lost and the productivity impact across Qatar.</p>
+
+    <div class="impact-layout">
+      <div class="impact-charts">
+        <div class="c-block-l reveal">
+          <div class="c-head-l"><h3>Wasted Time Due to Congestion</h3></div>
+          <div id="chart-wasted" style="padding: 8px 8px 0; flex:1; min-height: 260px;"></div>
+          <div class="c-foot-l">
+            <span class="c-tag-l">10-year trend: 2015–2024</span>
+            <span class="c-tag-l">Peak: 109 hrs in 2016</span>
+            <span class="c-tag-l">Post-World Cup stabilized at 38 hrs</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="impact-stats">
+        <div class="i-stat i-stat-plain reveal">
+          <div class="i-lbl">Avg. Daily Distance</div>
+          <div class="i-val"><span class="count-up" data-target="35" data-decimals="0">35</span><small> km</small></div>
+          <div class="i-note">Average driven per commuter per day in 2024.</div>
+        </div>
+        <div class="i-stat i-stat-dark reveal">
+          <div class="i-lbl">Annual Time Lost</div>
+          <div class="i-val"><span class="count-up" data-target="38" data-decimals="0">38</span><small> hrs</small></div>
+          <div class="i-note">Hours wasted per commuter per year during workdays.</div>
+        </div>
+        <div class="i-stat i-stat-red reveal">
+          <div class="i-lbl">Congestion Cost 2025</div>
+          <div class="i-val" style="font-size:34px;">QR <span class="count-up" data-target="3.8" data-decimals="1">3.8</span><small>B</small></div>
+          <div class="i-note">Productivity loss only. ~0.53% of GDP at constant prices.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cost-banner reveal">
+      <div class="cost-l">
+        <div class="cost-l-eyebrow">Total Economic Impact — Qatar 2024</div>
+        <h2>Cost of<br/>Congestion<br/>in Qatar</h2>
+        <p>Calculated using QMIC's internal model based on public records and assumptions, representing productivity loss from time wasted in traffic across the nation.</p>
+      </div>
+      <div class="cost-r">
+        <div class="cost-amount">QR <span class="count-up" data-target="3.8" data-decimals="1">3.8</span>B</div>
+        <div class="cost-currency">Qatari Riyal — 2025</div>
+        <div class="cost-gdp-pill">≈ 0.53% of GDP at constant prices</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REQUEST FULL REPORT -->
+<section id="request" class="sec" style="background:var(--d-bg);border-bottom:none;">
+  <div class="inner">
+    <div class="request-wrap">
+      <div class="request-left">
+        <div class="sec-pill sec-pill-d" style="margin-bottom:20px;">Full Report Available</div>
+        <h2 class="sec-h sec-h-d" style="margin-bottom:16px;">Get the Complete<br/><span>Data Report</span></h2>
+        <p class="sec-p sec-p-d" style="margin-bottom:28px;">Interested in the insights behind Qatar's traffic data? Reach out and let's start a conversation. We will connect with you to understand your needs and explore how our data can support your work.</p>
+        <div class="request-features">
+          <div class="request-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            Brief consultation to understand your requirements
+          </div>
+          <div class="request-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Flexible scheduling based on your availability
+          </div>
+          <div class="request-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            Tailored discussions for your organization or research goals
+          </div>
+          <div class="request-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Access to extended insights and supporting data
+          </div>
+        </div>
+      </div>
+      <div class="request-right">
+        <div class="request-card">
+          <h3 class="request-card-title">Get in Touch</h3>
+          <p class="request-card-sub">Click the button below to open your email with a pre-filled message. We will reach out to schedule a call and explore how this data can benefit you.</p>
+          <a class="rf-mailto-btn" target="_blank" href="mailto:business@qmic.com?subject=Interest%20in%20Qatar%20Traffic%20Report%202025&body=Dear%20QMIC%20Team%2C%0A%0AI%20came%20across%20the%20Qatar%20Traffic%20Report%202025%20and%20I%20am%20interested%20in%20learning%20more%20about%20the%20report%20and%20the%20insights%20behind%20the%20data.%0A%0AContact%20Details%3A%0AName%3A%20%0AOrganization%3A%20%0APreferred%20Contact%20Time%3A%20%0A%0ALooking%20forward%20to%20hearing%20from%20you.%0A%0ABest%20regards%2C">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Request Access
+          </a>
+          <div class="rf-divider">
+            <span>or copy our email</span>
+          </div>
+                      <div class="rf-email-display">
+              <input id="rf-email-text" type="text" value="business@qmic.com" readonly
+                style="border:none;background:transparent;color:var(--d-text);font-family:var(--b);font-size:14px;flex:1;outline:none;cursor:default;"/>
+              <button id="rf-copy-btn" onclick="doCopy()"
+                style="background:var(--red);color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;">
+                Copy
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<!-- FOOTER -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-brand">
+      <img src="images/qmic-logo-white.svg" alt="QMIC" class="foot-logo-svg" />
+
+    </div>
+    <ul class="foot-links">
+      <li><a href="#foundation">Foundation</a></li>
+      <li><a href="#use-cases">Use Cases</a></li>
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#patterns">Patterns</a></li>
+      <li><a href="#impact">Impact</a></li>
+      <li><a href="#request">Get Report</a></li>
+    </ul>
+    <span class="foot-copy">Qatar Traffic Report 2025</span>
+  </div>
+</footer>
+
+
+  <!-- ApexCharts library -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <!-- Shared JS -->
+  <script src="assets/js/qatar-traffic-report.js"></script>
+  <!-- Page-specific chart data -->
+  <script src="assets/js/data-2025.js"></script>
+
+</body>
+</html>
